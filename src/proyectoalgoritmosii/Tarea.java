@@ -11,12 +11,16 @@ import java.util.ArrayList;
  *
  * @author Javier
  */
-public class Grafo {
-    ArrayList<Tarea> tareas;
-    
-    public Grafo() {
-        this.tareas = new ArrayList<>();
-    }
+public class Tarea {
+    private int numero;
+    private int tiempo;
+    private int[] previos;
 
+    public Tarea(int numero, int tiempo, int[] previos) {
+        this.numero = numero;
+        this.tiempo = tiempo;
+        this.previos = previos;
+    }
+    
     
 }

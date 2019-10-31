@@ -10,29 +10,29 @@ package proyectoalgoritmosii;
  * @author Javier
  */
 public class Arco {
-    private Vertice origen;
-    private Vertice destino;
+    private Tarea origen;
+    private Tarea destino;
     private Boolean used;
     
-    public Arco(Vertice origen, Vertice destino, Boolean anadido) {
+    public Arco(Tarea origen, Tarea destino, Boolean anadido) {
         this.origen = origen;
         this.destino = destino;
         this.used = anadido;
     }
 
-    public void setOrigen(Vertice origen) {
+    public void setOrigen(Tarea origen) {
         this.origen = origen;
     }
     
-    public Vertice getOrigen() {
+    public Tarea getOrigen() {
         return origen;
     }
 
-    public void setDestino(Vertice destino) {
+    public void setDestino(Tarea destino) {
         this.destino = destino;
     }
     
-     public Vertice getDestino() {
+     public Tarea getDestino() {
         return destino;
     }
 
