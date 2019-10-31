@@ -16,10 +16,11 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class ProyectoAlgoritmosII {
     
-    public static ArrayList<Tarea> verticesLocales;
     public static String algoritmo;
-    public static int vertices;
-    public static int arcos;
+    public static int tareas;
+    public static Grafo grafo = new Grafo();
+    public static ArrayList<Estacion> estaciones = new ArrayList<>();
+    
     public static int [][] matrizAdy;
     
     public static int [][] matriz10 = {{0,1,1,1,0,0,0,0,0,0},
@@ -36,18 +37,29 @@ public class ProyectoAlgoritmosII {
     public static int[][] matriz20 = {};
     
     public static void main(String[] args) {
+        pedirDatos();
+    }
+    
+    public static void pedirDatos(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Especifique las horas de trabajo diarias.");
         String horasS = scanner.next();
         System.out.println("Especifique la cantidad de produccion diaria.");
         String produS = scanner.next();
-        int horas = Integer.valueOf(horasS);
-        int produ = Integer.valueOf(produS);
-        int ciclo = (horas * 60 * 60) / produ;
+        int ciclo = 0;
+        try{
+            int horas = Integer.valueOf(horasS);
+            int produ = Integer.valueOf(produS);
+            ciclo = (horas * 60 * 60) / produ;
+        }catch(NumberFormatException e){
+            System.out.println("Los datos de horas de trabajo y cantidad de producción beben ser números enteros.");
+            pedirDatos();
+        }
+        
         menuTamano(ciclo);
     }
     
-    public static void menuTamano(int ciclo) {
+    public static void menuTamano(int ciclo){
         Scanner scanner = new Scanner(System.in);
         Random r = new Random();
         System.out.println("Seleccione la cantidad de tareas que desea optimizar:\n"
@@ -61,27 +73,27 @@ public class ProyectoAlgoritmosII {
            switch(option){
             case "1":
                 System.out.println("Ha seleccionado 10 tareas.");
-                vertices = 10;
+                tareas = 10;
                 menuAlgoritmo(ciclo);
                 break;
             case "2":
                 System.out.println("Ha seleccionado 20 tareas.");
-                vertices = 20;
+                tareas = 20;
                 menuAlgoritmo(ciclo);
                 break;
             case "3":
                 System.out.println("Ha seleccionado 30 tareas.");
-                vertices = 30;
+                tareas = 30;
                 menuAlgoritmo(ciclo);
                 break;
             case "4":
                 System.out.println("Ha seleccionado 60 tareas.");
-                vertices = 60;
+                tareas = 60;
                 menuAlgoritmo(ciclo);
                 break;
             case "5":
                 System.out.println("Ha seleccionado tareas aleatorias.");
-                vertices = r.nextInt(361-60) + 60;
+                tareas = r.nextInt(361-60) + 60;
                 menuAlgoritmo(ciclo);
                 break;
             default: 
@@ -102,7 +114,7 @@ public class ProyectoAlgoritmosII {
             case "1":
                 System.out.println("Ha seleccionado programación dinámica.");
                 algoritmo = "d";
-                menuTamano(ciclo);
+                algoritmoDinamico(ciclo);
                 break;
             case "2":
                 System.out.println("Ha seleccionado el algoritmo genético.");
@@ -116,12 +128,81 @@ public class ProyectoAlgoritmosII {
         }
     }
     
-    public static void algoritmoDinamico(int ciclo){
-        
+    public static void crearEstaciones(int ciclo, String algoritmo){
+        int tiempoT = grafo.sumarTiempos();
+        int estacionesI = tiempoT / ciclo;
+        for(int i = 1; i < (estacionesI + 1); i++){
+            Estacion est = new Estacion(i, ciclo);
+            estaciones.add(est);
+        }
+        switch(algoritmo){
+            case "d":
+                algoritmoDinamico(ciclo);
+                break;
+            case "g":
+                break;
+            default:
+                break;
+        }
     }
     
-    public static Estacion etapa(Estacion estacion){
+    public static void algoritmoDinamico(int ciclo){
+       ArrayList<Tarea> candidatos = grafo.getTareas();
+       ArrayList<Tarea> usados = new ArrayList<>();
+       
+    }
+    
+    public static Estacion etapa(Estacion estacion, ArrayList<Tarea> usados){
         Estacion actual = estacion;
+        ArrayList<Tarea> candidatos = sacarCandidatos(usados);
+        Tarea escogido = escogerCandidato(candidatos, usados);
+        if(escogido.getTiempo() > actual.getRestante()){
+            actual.setLlena(true);
+            return actual;
+        }
+        actual.addTarea(escogido);
+        usados.add(escogido);
         return actual;
+    }
+    
+    public static ArrayList<Tarea> sacarCandidatos(ArrayList<Tarea> usados){
+        ArrayList<Tarea> candidatos = new ArrayList<Tarea>();
+        
+        for(Tarea usado : usados){
+            ArrayList<Tarea> adyacentes = usado.getAdyacentes();
+            for(Tarea adya : adyacentes){
+                if((!usados.contains(adya)) && (!candidatos.contains(adya))){
+                    candidatos.add(adya);
+                }
+            }
+        }
+        
+        return candidatos;
+    }
+    
+    public static Tarea escogerCandidato(ArrayList<Tarea> candidatos, ArrayList<Tarea> usados){
+        Tarea escogido = null;
+        int mayor = 0;
+        for(Tarea cand : candidatos){
+            if(revisarPrevios(cand, usados)){
+                if(cand.getTiempo() < mayor){
+                    escogido = cand;
+                    mayor = cand.getTiempo();
+                }
+            }
+        }
+        return escogido;
+    }
+    
+    public static boolean revisarPrevios(Tarea tarea, ArrayList<Tarea> usados){
+        boolean result = true;
+        ArrayList<Tarea> previos = tarea.getPrevios();
+        for(Tarea prev : previos){
+            if(!usados.contains(prev)){
+                result = false;
+                break;
+            }
+        }
+        return result;
     }
 }

@@ -13,17 +13,40 @@ import java.util.ArrayList;
  */
 public class Estacion {
     private int numero;
-    private int ciclo;
     private int restante;
+    private boolean llena;
     private ArrayList<Tarea> tareas;
 
-    public Estacion(int numero, int ciclo, int restante) {
+    public Estacion(int numero, int restante) {
         this.numero = numero;
-        this.ciclo = ciclo;
         this.restante = restante;
+        this.llena = false;
         this.tareas = new ArrayList<>();
     }
     
-    
+    public void addTarea(Tarea tarea){
+        this.tareas.add(tarea);
+        this.restante = restante - tarea.getTiempo();
+    }
+
+    public int getNumero() {
+        return numero;
+    }
+
+    public int getRestante() {
+        return restante;
+    }
+
+    public boolean getLlena() {
+        return llena;
+    }
+
+    public void setLlena(boolean llena) {
+        this.llena = llena;
+    }
+
+    public ArrayList<Tarea> getTareas() {
+        return tareas;
+    }
 }
 
