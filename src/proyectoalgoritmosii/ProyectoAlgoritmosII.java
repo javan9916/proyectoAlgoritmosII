@@ -35,7 +35,7 @@ public class ProyectoAlgoritmosII {
                                        {0,0,0,0,0,0,0,0,0,1},
                                        {0,0,0,0,0,0,0,0,0,0}};
     
-    public static ArrayList<Vertice> lista20 = new ArrayList<>();
+    public static int[][] matriz20 = {};
     
     public static void main(String[] args) {
         menuTamano();
