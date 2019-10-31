@@ -145,24 +145,28 @@ public class ProyectoAlgoritmosII {
                 break;
         }
     }
+    public static ArrayList<Tarea> usados = new ArrayList<>();
     
-    public static void algoritmoDinamico(int ciclo){
-       ArrayList<Tarea> candidatos = grafo.getTareas();
-       ArrayList<Tarea> usados = new ArrayList<>();
-       
+    public static void algoritmoDinamico(int ciclo){   
+        ArrayList<Estacion> estacionesF = new ArrayList<>();
+        for (Estacion est : estaciones) {
+            while(!est.getLlena()){
+                est = etapa(est);
+            }
+            estacionesF.add(est);
+        }
     }
     
-    public static Estacion etapa(Estacion estacion, ArrayList<Tarea> usados){
-        Estacion actual = estacion;
+    public static Estacion etapa(Estacion estacion){
         ArrayList<Tarea> candidatos = sacarCandidatos(usados);
         Tarea escogido = escogerCandidato(candidatos, usados);
-        if(escogido.getTiempo() > actual.getRestante()){
-            actual.setLlena(true);
-            return actual;
+        if(escogido.getTiempo() > estacion.getRestante()){
+            estacion.setLlena(true);
+            return estacion;
         }
-        actual.addTarea(escogido);
+        estacion.addTarea(escogido);
         usados.add(escogido);
-        return actual;
+        return estacion;
     }
     
     public static ArrayList<Tarea> sacarCandidatos(ArrayList<Tarea> usados){
