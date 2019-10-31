@@ -16,9 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class ProyectoAlgoritmosII {
     
-    public static Grafo g;
     public static ArrayList<Tarea> verticesLocales;
-    public static ArrayList<Arco> arcosLocales;
     public static String algoritmo;
     public static int vertices;
     public static int arcos;
@@ -118,82 +116,12 @@ public class ProyectoAlgoritmosII {
         }
     }
     
-    
-    public static void crearMatriz(){
-        matrizAdy = new int[vertices][vertices];
-        int cont = 0;
-
-        if (vertices == 10) {
-            matrizAdy = matriz10;
-        } else if(vertices == 20){
-            matrizAdy = matriz20;
-        } else {
-            for (int i = 0; i < vertices; i++) {
-                for (int j = 0; j < vertices; j++) {
-                    if (i < j && (i + 1) == j) {
-                        matrizAdy[i][j] = 1;
-                        matrizAdy[j][i] = 1;
-                        cont++;
-                        if (i == 0 || i == (vertices / 2) - 2 || i == (vertices / 2) + 2) {
-                            matrizAdy[i][vertices - 1] = 1;
-                            matrizAdy[j][vertices - 1] = 1;
-                            cont++;
-                        }
-                    }
-                }
-            }
-
-            while (cont < arcos) {
-                for (int i = 0; i < vertices; i++) {
-                    int limite = 1;
-                    if (i <= vertices - 3 && limite <= 2) {
-                        int j = 19;
-                        if ((2 + i) != (vertices - 1)) {
-                            j = ThreadLocalRandom.current().nextInt(2 + i, vertices - 1);
-                        }
-                        if (matrizAdy[i][j] == 0 && i + 2 <= j) {
-                            matrizAdy[i][j] = 1;
-                            matrizAdy[j][i] = 1;
-                            limite++;
-                            cont++;
-                        }
-                    }
-                }
-            }
-        }
-        
-        llenarGrafo();
-    }
-    
-    public static void llenarGrafo() {
-        g = new Grafo();
-        verticesLocales = new ArrayList<>();
-        arcosLocales = new ArrayList<>();
-        Random random = new Random();
-
-        for (int i = 0; i < vertices; i++) {
-            Tarea nuevo = new Tarea(Integer.toString(i), false, random.nextInt(50)+1);
-            g.addVertice(nuevo);
-        }
-
-        for (int i = 0; i < vertices; i++) {
-            for (int j = 0; j < vertices; j++) {
-                if (matrizAdy[i][j] != 0) {
-                    Tarea origen = g.buscarVerticeGrafo(Integer.toString(i));
-                    Tarea destino = g.buscarVerticeGrafo(Integer.toString(j));
-                    
-                    if (origen != null && destino != null)
-                        arcosLocales.add(new Arco(origen, destino, false));
-                    
-                    origen.addArco(new Arco(origen, destino, false));
-                }
-            }
-        }
-    }
-    
     public static void algoritmoDinamico(int ciclo){
         
     }
     
-    public static ArrayList
+    public static Estacion etapa(Estacion estacion){
+        Estacion actual = estacion;
+        return actual;
+    }
 }

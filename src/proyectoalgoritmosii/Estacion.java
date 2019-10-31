@@ -11,10 +11,19 @@ import java.util.ArrayList;
  *
  * @author carlo
  */
-public class Grafo {
+public class Estacion {
+    private int numero;
+    private int ciclo;
+    private int restante;
     private ArrayList<Tarea> tareas;
-    
-    public Grafo(){
+
+    public Estacion(int numero, int ciclo, int restante) {
+        this.numero = numero;
+        this.ciclo = ciclo;
+        this.restante = restante;
         this.tareas = new ArrayList<>();
     }
+    
+    
 }
+
