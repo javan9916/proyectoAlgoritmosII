@@ -16,9 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class ProyectoAlgoritmosII {
     
-    public static Grafo g;
-    public static ArrayList<Vertice> verticesLocales;
-    public static ArrayList<Arco> arcosLocales;
+    public static ArrayList<Tarea> verticesLocales;
     public static String algoritmo;
     public static int vertices;
     public static int arcos;
@@ -35,6 +33,7 @@ public class ProyectoAlgoritmosII {
                                        {0,0,0,0,0,0,0,0,0,1},
                                        {0,0,0,0,0,0,0,0,0,0}};
     
+
                                        //A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T
     public static int [][] matriz20 = { {0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                                         {0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -88,12 +87,21 @@ public class ProyectoAlgoritmosII {
                                         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},//AB
                                         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},//AC
                                         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};//AD
+
     
     public static void main(String[] args) {
-        menuTamano();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Especifique las horas de trabajo diarias.");
+        String horasS = scanner.next();
+        System.out.println("Especifique la cantidad de produccion diaria.");
+        String produS = scanner.next();
+        int horas = Integer.valueOf(horasS);
+        int produ = Integer.valueOf(produS);
+        int ciclo = (horas * 60 * 60) / produ;
+        menuTamano(ciclo);
     }
     
-    public static void menuTamano() {
+    public static void menuTamano(int ciclo) {
         Scanner scanner = new Scanner(System.in);
         Random r = new Random();
         System.out.println("Seleccione la cantidad de tareas que desea optimizar:\n"
@@ -108,36 +116,36 @@ public class ProyectoAlgoritmosII {
             case "1":
                 System.out.println("Ha seleccionado 10 tareas.");
                 vertices = 10;
-                crearMatriz();
+                menuAlgoritmo(ciclo);
                 break;
             case "2":
                 System.out.println("Ha seleccionado 20 tareas.");
                 vertices = 20;
-                crearMatriz();
+                menuAlgoritmo(ciclo);
                 break;
             case "3":
                 System.out.println("Ha seleccionado 30 tareas.");
                 vertices = 30;
-                crearMatriz();
+                menuAlgoritmo(ciclo);
                 break;
             case "4":
                 System.out.println("Ha seleccionado 60 tareas.");
                 vertices = 60;
-                crearMatriz();
+                menuAlgoritmo(ciclo);
                 break;
             case "5":
                 System.out.println("Ha seleccionado tareas aleatorias.");
                 vertices = r.nextInt(361-60) + 60;
-                crearMatriz();
+                menuAlgoritmo(ciclo);
                 break;
             default: 
                 System.out.println("Elección inválida, por favor seleccione una opcción válida.");
-                menuTamano();
+                menuTamano(ciclo);
                 break;
             } 
     }
     
-    public static void menuAlgoritmo() {
+    public static void menuAlgoritmo(int ciclo) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Algoritmos:\n"
                 + "1) Programación dinámica\n"
@@ -148,16 +156,16 @@ public class ProyectoAlgoritmosII {
             case "1":
                 System.out.println("Ha seleccionado programación dinámica.");
                 algoritmo = "d";
-                menuTamano();
+                menuTamano(ciclo);
                 break;
             case "2":
                 System.out.println("Ha seleccionado el algoritmo genético.");
                 algoritmo = "g";
-                menuTamano();
+                menuTamano(ciclo);
                 break;
             default: 
                 System.out.println("Elección inválida, por favor seleccione una opción válida.");
-                menuAlgoritmo();
+                menuAlgoritmo(ciclo);
                 break;
         }
     }
@@ -293,33 +301,11 @@ public class ProyectoAlgoritmosII {
             }
             System.out.println("");
         }
-        
-        //llenarGrafo();
     }
     
-    public static void llenarGrafo() {
-        g = new Grafo();
-        verticesLocales = new ArrayList<>();
-        arcosLocales = new ArrayList<>();
-        Random random = new Random();
+    /*public static Estacion etapa(Estacion estacion){
+        Estacion actual = estacion;
+        return actual;
+    }*/
 
-        for (int i = 0; i < vertices; i++) {
-            Vertice nuevo = new Vertice(Integer.toString(i), false, random.nextInt(50)+1);
-            g.addVertice(nuevo);
-        }
-
-        for (int i = 0; i < vertices; i++) {
-            for (int j = 0; j < vertices; j++) {
-                if (matrizAdy[i][j] != 0) {
-                    Vertice origen = g.buscarVerticeGrafo(Integer.toString(i));
-                    Vertice destino = g.buscarVerticeGrafo(Integer.toString(j));
-                    
-                    if (origen != null && destino != null)
-                        arcosLocales.add(new Arco(origen, destino, false));
-                    
-                    origen.addArco(new Arco(origen, destino, false));
-                }
-            }
-        }
-    }
 }

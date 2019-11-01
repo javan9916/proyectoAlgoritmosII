@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package proyectoalgoritmosii;
-
 /**
  *
  * @author Javier
@@ -35,5 +34,14 @@ public class Tarea {
         return procedencias;
     }
 
+    private int numero;
+    private int tiempo;
+    private int[] previos;
+
+    public Tarea(int numero, int tiempo, int[] previos) {
+        this.numero = numero;
+        this.tiempo = tiempo;
+        this.previos = previos;
+    }
     
 }
