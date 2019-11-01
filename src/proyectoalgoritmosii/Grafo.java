@@ -17,4 +17,21 @@ public class Grafo {
     public Grafo(){
         this.tareas = new ArrayList<>();
     }
+    
+    public ArrayList<Tarea> getTareas(){
+        return this.tareas;
+    }
+    
+    public void addTarea(Tarea tarea){
+        this.tareas.add(tarea);
+    }
+    
+    public int sumarTiempos(){
+        int total = 0;
+        for(Tarea tarea : this.tareas){
+            total = total + tarea.getTiempo();
+        }
+        return total;
+    }
+    
 }

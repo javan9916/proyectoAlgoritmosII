@@ -16,10 +16,11 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class ProyectoAlgoritmosII {
     
-    public static ArrayList<Tarea> verticesLocales;
     public static String algoritmo;
-    public static int vertices;
-    public static int arcos;
+    public static int tareas;
+    public static Grafo grafo = new Grafo();
+    public static ArrayList<Estacion> estaciones = new ArrayList<>();
+    
     public static int [][] matrizAdy;
                                       //A,B,C,D,E,F,G,H,I,J
     public static int [][] matriz10 = {{0,1,1,1,0,0,0,0,0,0},
@@ -90,18 +91,29 @@ public class ProyectoAlgoritmosII {
 
     
     public static void main(String[] args) {
+        pedirDatos();
+    }
+    
+    public static void pedirDatos(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Especifique las horas de trabajo diarias.");
         String horasS = scanner.next();
         System.out.println("Especifique la cantidad de produccion diaria.");
         String produS = scanner.next();
-        int horas = Integer.valueOf(horasS);
-        int produ = Integer.valueOf(produS);
-        int ciclo = (horas * 60 * 60) / produ;
+        int ciclo = 0;
+        try{
+            int horas = Integer.valueOf(horasS);
+            int produ = Integer.valueOf(produS);
+            ciclo = (horas * 60 * 60) / produ;
+        }catch(NumberFormatException e){
+            System.out.println("Los datos de horas de trabajo y cantidad de producción beben ser números enteros.");
+            pedirDatos();
+        }
+        
         menuTamano(ciclo);
     }
     
-    public static void menuTamano(int ciclo) {
+    public static void menuTamano(int ciclo){
         Scanner scanner = new Scanner(System.in);
         Random r = new Random();
         System.out.println("Seleccione la cantidad de tareas que desea optimizar:\n"
@@ -115,27 +127,27 @@ public class ProyectoAlgoritmosII {
            switch(option){
             case "1":
                 System.out.println("Ha seleccionado 10 tareas.");
-                vertices = 10;
+                tareas = 10;
                 menuAlgoritmo(ciclo);
                 break;
             case "2":
                 System.out.println("Ha seleccionado 20 tareas.");
-                vertices = 20;
+                tareas = 20;
                 menuAlgoritmo(ciclo);
                 break;
             case "3":
                 System.out.println("Ha seleccionado 30 tareas.");
-                vertices = 30;
+                tareas = 30;
                 menuAlgoritmo(ciclo);
                 break;
             case "4":
                 System.out.println("Ha seleccionado 60 tareas.");
-                vertices = 60;
+                tareas = 60;
                 menuAlgoritmo(ciclo);
                 break;
             case "5":
                 System.out.println("Ha seleccionado tareas aleatorias.");
-                vertices = r.nextInt(361-60) + 60;
+                tareas = r.nextInt(361-60) + 60;
                 menuAlgoritmo(ciclo);
                 break;
             default: 
@@ -156,7 +168,7 @@ public class ProyectoAlgoritmosII {
             case "1":
                 System.out.println("Ha seleccionado programación dinámica.");
                 algoritmo = "d";
-                menuTamano(ciclo);
+                algoritmoDinamico(ciclo);
                 break;
             case "2":
                 System.out.println("Ha seleccionado el algoritmo genético.");
@@ -171,33 +183,33 @@ public class ProyectoAlgoritmosII {
     }
     
     public static void crearMatriz() {
-        matrizAdy = new int[vertices][vertices];
+        matrizAdy = new int[tareas][tareas];
         int cont = 0;
         Random r = new Random();
         
-        if (vertices == 10) {
+        if (tareas == 10) {
             matrizAdy = matriz10;
-        } else if (vertices == 20){
+        } else if (tareas == 20){
             matrizAdy = matriz20;
-        } else if (vertices == 30){
+        } else if (tareas == 30){
             matrizAdy = matriz30;
-        } else if (vertices == 60){
+        } else if (tareas == 60){
             //matrizAdy = matriz60;
         } else {
             int i = 0;
             int j = 0;
             boolean o;
             int racha;
-            while (i < vertices) {
+            while (i < tareas) {
                 if (i >= j) {
                     j++;
                 } else {
-                    if (i < (vertices/2)-1) {
+                    if (i < (tareas/2)-1) {
                         o = true;
                         racha = ThreadLocalRandom.current().nextInt(2, 4);
-                    } else if (j >= vertices) {
+                    } else if (j >= tareas) {
                         o = false;
-                        racha = (vertices - 1);
+                        racha = (tareas - 1);
                     } else {
                         o = r.nextBoolean();
                         racha = ThreadLocalRandom.current().nextInt(2, 4);
@@ -207,10 +219,10 @@ public class ProyectoAlgoritmosII {
                         o = true;
                     
                     for (int k = 0; k < racha; k++) {
-                        if (o && j < vertices) {
+                        if (o && j < tareas) {
                             matrizAdy[i][j] = 1;
                             j++;
-                        } else if (!o && i < vertices - 1 && (i != j || i < j)) {
+                        } else if (!o && i < tareas - 1 && (i != j || i < j)) {
                             matrizAdy[i][j] = 1;
                             i++;
                         }
@@ -225,87 +237,86 @@ public class ProyectoAlgoritmosII {
             }
         }
     }
-    
-    public static void crearMatrizxd(){
-        matrizAdy = new int[vertices][vertices];
-        int cont = 0;
-        Random r = new Random();
 
-        if (vertices == 10) {
-            matrizAdy = matriz10;
-        } else if(vertices != 20){
-            //matrizAdy = matriz20;
-        } else {
-            boolean o;
-            int racha = 0;
-            int a = 0;
-            for (int i = 0; i < vertices; i++) {
-                for (int j = 0; j < vertices; j++) {
-                    if (i != j && i < j) {
-                        if (i == 0) {
-                            o = true;
-                            racha = ThreadLocalRandom.current().nextInt(2, 4);
-                        } else if (j == vertices) {
-                            o = false;
-                            racha = (vertices - i);
-                        } else {
-                            if (a <= 20) {
-                               j = a; 
-                            }
-                            o = r.nextBoolean();
-                            racha = ThreadLocalRandom.current().nextInt(2, 4);
-                        }
-                        
-                        for (int k = 0; k < racha; k++) {
-                            if (o && j < vertices) {
-                                matrizAdy[i][j] = 1;
-                                j++;
-                            } else if (!o && i < vertices - 1) {
-                                System.out.println(j);
-                                matrizAdy[i][j] = 1;
-                                i++;
-                            }
-                        }
-                        a = j;
-                        /*if (i == 0 || i == (vertices / 2) - 2 || i == (vertices / 2) + 2) {
-                            cont++;
-                        }*/
-                        break;
-                    }
-                    
-                }
-            }
-
-            /*while (cont < arcos) {
-                for (int i = 0; i < vertices; i++) {
-                    int limite = 1;
-                    if (i <= vertices - 3 && limite <= 2) {
-                        int j = 19;
-                        if ((2 + i) != (vertices - 1)) {
-                            j = ThreadLocalRandom.current().nextInt(2 + i, vertices - 1);
-                        }
-                        if (matrizAdy[i][j] == 0 && i + 2 <= j) {
-                            matrizAdy[i][j] = 1;
-                            matrizAdy[j][i] = 1;
-                            limite++;
-                            cont++;
-                        }
-                    }
-                }
-            }*/
+    public static void crearEstaciones(int ciclo, String algoritmo){
+        int tiempoT = grafo.sumarTiempos();
+        int estacionesI = tiempoT / ciclo;
+        for(int i = 1; i < (estacionesI + 1); i++){
+            Estacion est = new Estacion(i, ciclo);
+            estaciones.add(est);
         }
-        
-        for (int i = 0; i < vertices; i++) {
-            for (int j = 0; j < vertices; j++) {
-                System.out.print(matrizAdy[i][j]+", ");
+        switch(algoritmo){
+            case "d":
+                algoritmoDinamico(ciclo);
+                break;
+            case "g":
+                break;
+            default:
+                break;
+        }
+    }
+    public static ArrayList<Tarea> usados = new ArrayList<>();
+    
+    public static void algoritmoDinamico(int ciclo){   
+        ArrayList<Estacion> estacionesF = new ArrayList<>();
+        for (Estacion est : estaciones) {
+            while(!est.getLlena()){
+                est = etapa(est);
             }
-            System.out.println("");
+            estacionesF.add(est);
         }
     }
     
-    /*public static Estacion etapa(Estacion estacion){
-        Estacion actual = estacion;
-        return actual;
-    }*/
-
+    public static Estacion etapa(Estacion estacion){
+        ArrayList<Tarea> candidatos = sacarCandidatos(usados);
+        Tarea escogido = escogerCandidato(candidatos, usados);
+        if(escogido.getTiempo() > estacion.getRestante()){
+            estacion.setLlena(true);
+            return estacion;
+        }
+        estacion.addTarea(escogido);
+        usados.add(escogido);
+        return estacion;
+    }
+    
+    public static ArrayList<Tarea> sacarCandidatos(ArrayList<Tarea> usados){
+        ArrayList<Tarea> candidatos = new ArrayList<Tarea>();
+        
+        for(Tarea usado : usados){
+            ArrayList<Tarea> adyacentes = usado.getAdyacentes();
+            for(Tarea adya : adyacentes){
+                if((!usados.contains(adya)) && (!candidatos.contains(adya))){
+                    candidatos.add(adya);
+                }
+            }
+        }
+        
+        return candidatos;
+    }
+    
+    public static Tarea escogerCandidato(ArrayList<Tarea> candidatos, ArrayList<Tarea> usados){
+        Tarea escogido = null;
+        int mayor = 0;
+        for(Tarea cand : candidatos){
+            if(revisarPrevios(cand, usados)){
+                if(cand.getTiempo() < mayor){
+                    escogido = cand;
+                    mayor = cand.getTiempo();
+                }
+            }
+        }
+        return escogido;
+    }
+    
+    public static boolean revisarPrevios(Tarea tarea, ArrayList<Tarea> usados){
+        boolean result = true;
+        ArrayList<Tarea> previos = tarea.getPrevios();
+        for(Tarea prev : previos){
+            if(!usados.contains(prev)){
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
 }
