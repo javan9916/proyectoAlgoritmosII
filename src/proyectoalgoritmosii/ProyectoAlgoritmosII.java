@@ -152,7 +152,7 @@ public class ProyectoAlgoritmosII {
                                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};//60
     
     public static void main(String[] args) {
-        //pedirDatos();
+        pedirDatos();
     }
     
     public static void pedirDatos(){
@@ -170,7 +170,7 @@ public class ProyectoAlgoritmosII {
             System.out.println("Los datos de horas de trabajo y cantidad de producción beben ser números enteros.");
             pedirDatos();
         }
-        
+        System.out.println("Tiempo de ciclo: " + ciclo);
         menuTamano(ciclo);
     }
     
@@ -189,27 +189,31 @@ public class ProyectoAlgoritmosII {
             case "1":
                 System.out.println("Ha seleccionado 10 tareas.");
                 tareas = 10;
-                menuAlgoritmo(ciclo);
+                matrizAdy = matriz10;
+                crearTareas(ciclo);
                 break;
             case "2":
                 System.out.println("Ha seleccionado 20 tareas.");
                 tareas = 20;
-                menuAlgoritmo(ciclo);
+                matrizAdy = matriz20;
+                crearTareas(ciclo);
                 break;
             case "3":
                 System.out.println("Ha seleccionado 30 tareas.");
                 tareas = 30;
-                menuAlgoritmo(ciclo);
+                matrizAdy = matriz30;
+                crearTareas(ciclo);
                 break;
             case "4":
                 System.out.println("Ha seleccionado 60 tareas.");
                 tareas = 60;
-                menuAlgoritmo(ciclo);
+                matrizAdy = matriz60;
+                crearTareas(ciclo);
                 break;
             case "5":
                 System.out.println("Ha seleccionado tareas aleatorias.");
                 tareas = r.nextInt(301-60) + 60;
-                menuAlgoritmo(ciclo);
+                crearTareas(ciclo);
                 break;
             default: 
                 System.out.println("Elección inválida, por favor seleccione una opcción válida.");
@@ -311,45 +315,90 @@ public class ProyectoAlgoritmosII {
         }
     }
     
-    public static void crearTareas(){
+    public static void crearTareas(int ciclo){
         Random rnd = new Random();
         for (int i = 1; i <= tareas; i++) {
             int tiempo = rnd.nextInt(51);
             Tarea newTarea = new Tarea(i, tiempo);
             grafo.addTarea(newTarea);
         }
+        
+        for (int i = 0; i < tareas; i++) {
+            for (int j = 0; j < tareas; j++) {
+                if(matrizAdy[i][j] == 1){
+                    grafo.addAdyacencia(i, j);
+                    grafo.addRequisito(j, i);
+                }
+            }
+        }
+        printTareas();
+        crearEstaciones(ciclo);
+        menuAlgoritmo(ciclo);
+    }
+    
+    public static void printTareas(){
+        ArrayList<Tarea> tareasO = grafo.getTareas();
+        for(Tarea tarea : tareasO){
+            System.out.println("Tarea número: " + tarea.getNumero() + ". Tiempo: " + tarea.getTiempo());
+            String adyacentesS = "Adyacentes: ";
+            ArrayList<Tarea> tareasD = tarea.getAdyacentes();
+            for(Tarea adya : tareasD){
+                String adyaS = String.valueOf(adya.getNumero());
+                adyacentesS = adyacentesS + adyaS + ", ";
+            }
+            System.out.println(adyacentesS);
+            String previosS = "Previos: ";
+            ArrayList<Tarea> tareasP = tarea.getPrevios();
+            for(Tarea previo : tareasP){
+                String previoS = String.valueOf(previo.getNumero());
+                previosS = previosS + previoS + ", ";
+            }
+            System.out.println(previosS);
+        }
+        System.out.println("");
     }
 
-    public static void crearEstaciones(int ciclo, String algoritmo){
+    public static void crearEstaciones(int ciclo){
         int tiempoT = grafo.sumarTiempos();
+        System.out.println("Tiempo de tareas total: " + tiempoT);
         int estacionesI = tiempoT / ciclo;
+        System.out.println("Estaciones totales: " + estacionesI);
         for(int i = 1; i < (estacionesI + 1); i++){
             Estacion est = new Estacion(i, ciclo);
             estaciones.add(est);
-        }
-        switch(algoritmo){
-            case "d":
-                algoritmoDinamico(ciclo);
-                break;
-            case "g":
-                break;
-            default:
-                break;
         }
     }
     public static ArrayList<Tarea> usados = new ArrayList<>();
     
     public static void algoritmoDinamico(int ciclo){   
         ArrayList<Estacion> estacionesF = new ArrayList<>();
-        for (Estacion est : estaciones) {
+        for(Estacion est : estaciones){
             while(!est.getLlena()){
                 est = etapa(est);
             }
             estacionesF.add(est);
         }
+        for(Estacion esta : estacionesF){
+            System.out.println("Estación número: " + esta.getNumero() + ". Tiempo sobrante: " + esta.getRestante());
+            String tareasS = "Tareas en la estación y duración de cada tarea: ";
+            ArrayList<Tarea> tareasE = esta.getTareas();
+            for(Tarea tarea : tareasE){
+                tareasS = tareasS + "Tarea#" + tarea.getNumero() + ", duracion: " + tarea.getTiempo() + "; ";
+            }
+            System.out.println(tareasS);
+            System.out.println("");
+        }
     }
     
     public static Estacion etapa(Estacion estacion){
+        if(usados.size() == tareas){
+            return estacion;
+        }else if(usados.size() == 0){
+            Tarea primero = grafo.getTareas().get(0);
+            estacion.addTarea(primero);
+            usados.add(primero);
+            return estacion;
+        }
         ArrayList<Tarea> candidatos = sacarCandidatos(usados);
         Tarea escogido = escogerCandidato(candidatos, usados);
         if(escogido.getTiempo() > estacion.getRestante()){
@@ -381,7 +430,7 @@ public class ProyectoAlgoritmosII {
         int mayor = 0;
         for(Tarea cand : candidatos){
             if(revisarPrevios(cand, usados)){
-                if(cand.getTiempo() < mayor){
+                if(cand.getTiempo() > mayor){
                     escogido = cand;
                     mayor = cand.getTiempo();
                 }

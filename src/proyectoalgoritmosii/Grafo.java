@@ -28,10 +28,18 @@ public class Grafo {
     
     public int sumarTiempos(){
         int total = 0;
-        for(Tarea tarea : this.tareas){
+        for(Tarea tarea : tareas){
             total = total + tarea.getTiempo();
         }
         return total;
+    }
+    
+    public void addAdyacencia(int origen, int destino){
+        tareas.get(origen).addAdyacente(tareas.get(destino));
+    }
+    
+    public void addRequisito(int tarea, int previo){
+        tareas.get(tarea).addPrevio(tareas.get(previo));
     }
     
 }
