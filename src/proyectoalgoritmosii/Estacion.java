@@ -48,5 +48,9 @@ public class Estacion {
     public ArrayList<Tarea> getTareas() {
         return tareas;
     }
+    
+    public void optimizar(int optimizacion){
+        restante = restante - optimizacion;
+    }
 }
 

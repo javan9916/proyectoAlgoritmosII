@@ -20,6 +20,7 @@ public class ProyectoAlgoritmosII {
     public static int tareas;
     public static Grafo grafo = new Grafo();
     public static ArrayList<Estacion> estaciones = new ArrayList<>();
+    public static ArrayList<Tarea> usados = new ArrayList<>();
     
     public static int [][] matrizAdy;
                                       //A,B,C,D,E,F,G,H,I,J
@@ -183,7 +184,7 @@ public class ProyectoAlgoritmosII {
                 + "3) 30 tareas\n"
                 + "4) 60 tareas\n"
                 + "5) tareas aleatorias\n");
-        System.out.print("Opción: ");
+        System.out.println("Opción: ");
         String option = scanner.next();
            switch(option){
             case "1":
@@ -227,7 +228,7 @@ public class ProyectoAlgoritmosII {
         System.out.println("Algoritmos:\n"
                 + "1) Programación dinámica\n"
                 + "2) Algoritmo genético\n");
-        System.out.print("Opción: ");
+        System.out.println("Opción: ");
         String option = scanner.next();
         switch(option){
             case "1":
@@ -309,7 +310,7 @@ public class ProyectoAlgoritmosII {
         
         for (int i = 0; i < tareas; i++) {
             for (int j = 0; j < tareas; j++) {
-                System.out.print(matrizAdy[i][j]+", ");
+                System.out.println(matrizAdy[i][j]+", ");
             }
             System.out.println("");
         }
@@ -337,6 +338,7 @@ public class ProyectoAlgoritmosII {
     }
     
     public static void printTareas(){
+        System.out.println("TAREAS CREADAS SEGUN DATOS PROPORCIONADOS \n");
         ArrayList<Tarea> tareasO = grafo.getTareas();
         for(Tarea tarea : tareasO){
             System.out.println("Tarea número: " + tarea.getNumero() + ". Tiempo: " + tarea.getTiempo());
@@ -368,7 +370,6 @@ public class ProyectoAlgoritmosII {
             estaciones.add(est);
         }
     }
-    public static ArrayList<Tarea> usados = new ArrayList<>();
     
     public static void algoritmoDinamico(int ciclo){   
         ArrayList<Estacion> estacionesF = new ArrayList<>();
@@ -378,6 +379,7 @@ public class ProyectoAlgoritmosII {
             }
             estacionesF.add(est);
         }
+        System.out.println("DISTRIBUCION DE TAREAS, CON SUS TIEMPOS, POR ESTACION \n");
         for(Estacion esta : estacionesF){
             System.out.println("Estación número: " + esta.getNumero() + ". Tiempo sobrante: " + esta.getRestante());
             String tareasS = "Tareas en la estación y duración de cada tarea: ";
@@ -388,6 +390,8 @@ public class ProyectoAlgoritmosII {
             System.out.println(tareasS);
             System.out.println("");
         }
+        
+        optimizador(estaciones, ciclo);
     }
     
     public static Estacion etapa(Estacion estacion){
@@ -444,6 +448,39 @@ public class ProyectoAlgoritmosII {
         ArrayList<Tarea> previos = tarea.getPrevios();
         for(Tarea prev : previos){
             if(!usados.contains(prev)){
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
+    
+    public static void optimizador(ArrayList<Estacion> estaciones, int ciclo){
+        System.out.println("OPTIMIZACION FINAL DE LAS ESTACIONES Y TIEMPO DE CICLO \n");
+        int optimizacion = 0;
+        while(posible(estaciones, optimizacion)) {
+            optimizacion++;
+        }
+        if(optimizacion == 0){
+            System.out.println("No es posible optimizar más el resultado pues no se puede disminuir el tiempo de ciclo");
+            return;
+        }
+        int newCiclo = ciclo - optimizacion;
+        System.out.println("El tiempo de ciclo puede ser reducido de " + ciclo + " a " +  newCiclo + ", ahorrando " + optimizacion + " segundos.");
+        System.out.println("Optimizacion resultante de las estaciones:");
+        for(Estacion estacion : estaciones){
+            String linea = "Estacion " + String.valueOf(estacion.getNumero()) + " se reduce de " + estacion.getRestante() + " a "; 
+            estacion.optimizar(optimizacion);
+            linea = linea + String.valueOf(estacion.getRestante() + " segundos sobrantes.");
+            System.out.println(linea);
+        }
+        
+    }
+    
+    public static boolean posible(ArrayList<Estacion> estaciones, int optimizacion){
+        boolean result = true;
+        for(Estacion estacion : estaciones){
+            if((estacion.getRestante() - optimizacion) <= 0){
                 result = false;
                 break;
             }
