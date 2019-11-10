@@ -380,14 +380,17 @@ public class ProyectoAlgoritmosII {
         }
     }
     
-    public static void algoritmoDinamico(int ciclo){   
-        usados = new ArrayList<>();                                             asigsDina++;
-        ArrayList<Estacion> estacionesF = new ArrayList<>();                    asigsDina++;                                             
-        for(Estacion est : estaciones){                                         asigsDina++; compsDina++;                                                                  
-            while(!est.getLlena()){                                             compsDina++;                                
-                est = etapa(est);                                               asigsDina++;                                                        
+    public static void algoritmoDinamico(int ciclo){
+        asigsDina = 0;
+        compsDina = 0;
+        lineaDina = 0;
+        usados = new ArrayList<>();                                             asigsDina++; lineaDina++;
+        ArrayList<Estacion> estacionesF = new ArrayList<>();                    asigsDina++; lineaDina++;                                            
+        for(Estacion est : estaciones){                                         asigsDina++; compsDina++; lineaDina++;                                                                  
+            while(!est.getLlena()){                                             compsDina++; lineaDina++;                           
+                est = etapa(est);                                               asigsDina++; lineaDina++;                                                       
             }
-            estacionesF.add(est);                                               asigsDina++;                                                        
+            estacionesF.add(est);                                               asigsDina++; lineaDina++;                                                      
         }
         
         //IMPRESION DE LOS RESULTADOS PRELIMINARES, NO CUENTA DENTRO DE LOS PASOS
@@ -408,102 +411,104 @@ public class ProyectoAlgoritmosII {
         optimizador(estaciones, ciclo);
     }
     
-    public static Estacion etapa(Estacion estacion){
-        if(usados.size() == tareas){                                            compsDina++;
+    public static Estacion etapa(Estacion estacion){                            lineaDina++;
+        if(usados.size() == tareas){                                            compsDina++; lineaDina++;
             return estacion;
-        }else if(usados.isEmpty()){                                             compsDina++;
-            Tarea primero = grafo.getTareas().get(0);                           asigsDina++;
-            estacion.addTarea(primero);                                         asigsDina++;
-            usados.add(primero);                                                asigsDina++;
-            return estacion;
-        }
-        ArrayList<Tarea> candidatos = sacarCandidatos(usados);                  asigsDina++;
-        Tarea escogido = escogerCandidato(candidatos, usados);                  asigsDina++;
-        if(escogido.getTiempo() > estacion.getRestante()){                      compsDina++;
-            estacion.setLlena(true);                                            asigsDina++;
+        }else if(usados.isEmpty()){                                             compsDina++; lineaDina++;
+            Tarea primero = grafo.getTareas().get(0);                           asigsDina++; lineaDina++;
+            estacion.addTarea(primero);                                         asigsDina++; lineaDina++;
+            usados.add(primero);                                                asigsDina++; lineaDina++; lineaDina++;
             return estacion;
         }
-        estacion.addTarea(escogido);                                            asigsDina++;
-        usados.add(escogido);                                                   asigsDina++;
+        ArrayList<Tarea> candidatos = sacarCandidatos(usados);                  asigsDina++; lineaDina++;
+        Tarea escogido = escogerCandidato(candidatos, usados);                  asigsDina++; lineaDina++;
+        if(escogido.getTiempo() > estacion.getRestante()){                      compsDina++; lineaDina++;
+            estacion.setLlena(true);                                            asigsDina++; lineaDina++; lineaDina++;
+            return estacion;
+        }
+        estacion.addTarea(escogido);                                            asigsDina++; lineaDina++;
+        usados.add(escogido);                                                   asigsDina++; lineaDina++; lineaDina++;
         return estacion;
     }
     
     public static ArrayList<Tarea> sacarCandidatos(ArrayList<Tarea> usados){
-        ArrayList<Tarea> candidatos = new ArrayList<Tarea>();                   asigsDina++;
+        ArrayList<Tarea> candidatos = new ArrayList<Tarea>();                   asigsDina++; lineaDina++;
         
-        for(Tarea usado : usados){                                              asigsDina++; compsDina++;
-            ArrayList<Tarea> adyacentes = usado.getAdyacentes();                asigsDina++;
-            for(Tarea adya : adyacentes){                                       asigsDina++; compsDina++;
-                if((!usados.contains(adya)) && (!candidatos.contains(adya))){   compsDina++;
-                    candidatos.add(adya);                                       asigsDina++;
+        for(Tarea usado : usados){                                              asigsDina++; compsDina++; lineaDina++;
+            ArrayList<Tarea> adyacentes = usado.getAdyacentes();                asigsDina++; lineaDina++;
+            for(Tarea adya : adyacentes){                                       asigsDina++; compsDina++; lineaDina++; lineaDina++;
+                if((!usados.contains(adya)) && (!candidatos.contains(adya))){   compsDina++; lineaDina++;
+                    candidatos.add(adya);                                       asigsDina++; lineaDina++;
                 }
             }
         }
-        
+                                                                                lineaDina++;
         return candidatos;
     }
     
     public static Tarea escogerCandidato(ArrayList<Tarea> candidatos, ArrayList<Tarea> usados){
-        Tarea escogido = null;                                                  asigsDina++;
-        int mayor = 0;                                                          asigsDina++;
-        for(Tarea cand : candidatos){                                           asigsDina++; compsDina++;
-            if(revisarPrevios(cand, usados)){ compsDina++;
-                if(cand.getTiempo() > mayor){ compsDina++;
-                    escogido = cand;                                            asigsDina++;
-                    mayor = cand.getTiempo();                                   asigsDina++;
+        Tarea escogido = null;                                                  asigsDina++; lineaDina++;
+        int mayor = 0;                                                          asigsDina++; lineaDina++; lineaDina++;
+        for(Tarea cand : candidatos){                                           asigsDina++; compsDina++; lineaDina++; lineaDina++;
+            if(revisarPrevios(cand, usados)){                                   compsDina++; lineaDina++; lineaDina++;
+                if(cand.getTiempo() > mayor){                                   compsDina++; lineaDina++;
+                    escogido = cand;                                            asigsDina++; lineaDina++;
+                    mayor = cand.getTiempo();                                   asigsDina++; lineaDina++;
                 }
             }
-        }
+        }                                                                       lineaDina++;
         return escogido;
     }
     
     public static boolean revisarPrevios(Tarea tarea, ArrayList<Tarea> usados){
-        boolean result = true;                                                  asigsDina++;
-        ArrayList<Tarea> previos = tarea.getPrevios();                          asigsDina++;
-        for(Tarea prev : previos){                                              asigsDina++; compsDina++;
-            if(!usados.contains(prev)){ compsDina++;
-                result = false;                                                 asigsDina++;
+        boolean result = true;                                                  asigsDina++; lineaDina++;
+        ArrayList<Tarea> previos = tarea.getPrevios();                          asigsDina++; lineaDina++; lineaDina++;
+        for(Tarea prev : previos){                                              asigsDina++; compsDina++; lineaDina++;
+            if(!usados.contains(prev)){                                         compsDina++; lineaDina++;
+                result = false;                                                 asigsDina++; lineaDina++; lineaDina++;
                 break;
             }
-        }
+        }                                                                       lineaDina++;
         return result;
     }
     
     public static void optimizador(ArrayList<Estacion> estaciones, int ciclo){
         System.out.println("OPTIMIZACION FINAL DE LAS ESTACIONES Y TIEMPO DE CICLO \n");
-        int optimizacion = 0;                                                   asigsDina++;
-        while(posible(estaciones, optimizacion)) {                              compsDina++;
-            optimizacion++;                                                     asigsDina++;
+        int optimizacion = 0;                                                   asigsDina++; lineaDina++; lineaDina++;
+        while(posible(estaciones, optimizacion)) {                              compsDina++; lineaDina++;
+            optimizacion++;                                                     asigsDina++; lineaDina++;
         }
         //IMPRESION DE LOS RESULTADOS OPTIMIZADOS, NO CUENTA DENTRO DE LOS PASOS
         if(optimizacion == 0){
             System.out.println("No es posible optimizar más el resultado pues no se"
                     + " puede disminuir el tiempo de ciclo");
-            return;
+        }else{
+            int newCiclo = ciclo - optimizacion;
+            System.out.println("El tiempo de ciclo puede ser reducido de " + ciclo + " a " +  newCiclo +
+                    ", ahorrando " + optimizacion + " segundos.");
+            System.out.println("Optimizacion resultante de las estaciones:");
+            for(Estacion estacion : estaciones){
+                String linea = "Estacion " + String.valueOf(estacion.getNumero()) + " se reduce de "
+                        + estacion.getRestante() + " a "; 
+                estacion.optimizar(optimizacion);
+                linea = linea + String.valueOf(estacion.getRestante() + " segundos sobrantes.");
+                System.out.println(linea);
+            }
         }
-        int newCiclo = ciclo - optimizacion;
-        System.out.println("El tiempo de ciclo puede ser reducido de " + ciclo + " a " +  newCiclo +
-                ", ahorrando " + optimizacion + " segundos.");
-        System.out.println("Optimizacion resultante de las estaciones:");
-        for(Estacion estacion : estaciones){
-            String linea = "Estacion " + String.valueOf(estacion.getNumero()) + " se reduce de "
-                    + estacion.getRestante() + " a "; 
-            estacion.optimizar(optimizacion);
-            linea = linea + String.valueOf(estacion.getRestante() + " segundos sobrantes.");
-            System.out.println(linea);
-        }
-        System.out.println("\n\n\n");
+        System.out.println("\n");
+        System.out.println("Algoritmo dinamico. Asignaciones totales:" + asigsDina + ", comparaciones totales: " + compsDina + ", lineas ejecutadas: " + lineaDina);
+        System.out.println("\n");
         menuTamano(ciclo);
     }
     
     public static boolean posible(ArrayList<Estacion> estaciones, int optimizacion){
-        boolean result = true;                                                  asigsDina++;
-        for(Estacion estacion : estaciones){                                    asigsDina++; compsDina++;
-            if((estacion.getRestante() - optimizacion) <= 0){                   compsDina++;
-                result = false;                                                 asigsDina++;
+        boolean result = true;                                                  asigsDina++; lineaDina++; lineaDina++;
+        for(Estacion estacion : estaciones){                                    asigsDina++; compsDina++; lineaDina++; lineaDina++;
+            if((estacion.getRestante() - optimizacion) <= 0){                   compsDina++; lineaDina++; lineaDina++;
+                result = false;                                                 asigsDina++; lineaDina++;lineaDina++;
                 break;
             }
-        }
+        }                                                                       lineaDina++;
         return result;
     }
 }
