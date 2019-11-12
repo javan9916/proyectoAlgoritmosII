@@ -432,7 +432,7 @@ public class ProyectoAlgoritmosII {
         estaciones = new ArrayList<>();
         int tiempoT = grafo.sumarTiempos();
         System.out.println("Tiempo de tareas total: " + tiempoT);
-        int estacionesI = tiempoT / ciclo;
+        int estacionesI = (tiempoT / ciclo) + 1;
         System.out.println("Estaciones totales: " + estacionesI);
         for(int i = 1; i < (estacionesI + 1); i++){
             Estacion est = new Estacion(i, ciclo);
