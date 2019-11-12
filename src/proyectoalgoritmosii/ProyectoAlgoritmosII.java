@@ -8,8 +8,6 @@ package proyectoalgoritmosii;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.concurrent.ThreadLocalRandom;
-
 /**
  *
  * @author Javier
@@ -20,6 +18,11 @@ public class ProyectoAlgoritmosII {
     public static int tareas;
     public static Grafo grafo = new Grafo();
     public static ArrayList<Estacion> estaciones = new ArrayList<>();
+    public static ArrayList<Tarea> usados = new ArrayList<>();
+    public static ArrayList<Estacion> padre1;
+    public static ArrayList<Estacion> padre2;
+    public static ArrayList<Estacion> hijo1;
+    public static ArrayList<Estacion> hijo2;
     
     public static int [][] matrizAdy;
                                       //A,B,C,D,E,F,G,H,I,J
@@ -155,6 +158,10 @@ public class ProyectoAlgoritmosII {
         pedirDatos();
     }
     
+    /**
+     * ---------------------- ALGORITMOS GENERALES ----------------------
+     */
+    
     public static void pedirDatos(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Especifique las horas de trabajo diarias.");
@@ -162,11 +169,11 @@ public class ProyectoAlgoritmosII {
         System.out.println("Especifique la cantidad de produccion diaria.");
         String produS = scanner.next();
         int ciclo = 0;
-        try{
+        try {
             int horas = Integer.valueOf(horasS);
             int produ = Integer.valueOf(produS);
             ciclo = (horas * 60 * 60) / produ;
-        }catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.out.println("Los datos de horas de trabajo y cantidad de producción beben ser números enteros.");
             pedirDatos();
         }
@@ -238,7 +245,7 @@ public class ProyectoAlgoritmosII {
             case "2":
                 System.out.println("Ha seleccionado el algoritmo genético.");
                 algoritmo = "g";
-                menuTamano(ciclo);
+                algoritmoGenetico(ciclo);
                 break;
             default: 
                 System.out.println("Elección inválida, por favor seleccione una opción válida.");
@@ -249,67 +256,55 @@ public class ProyectoAlgoritmosII {
     
     public static void crearMatriz() {
         matrizAdy = new int[tareas][tareas];
-        
-        if (tareas == 10) {
-            matrizAdy = matriz10;
-        } else if (tareas == 20){
-            matrizAdy = matriz20;
-        } else if (tareas == 30){
-            matrizAdy = matriz30;
-        } else if (tareas == 60){
-            matrizAdy = matriz60;
-        } else {
-            tareas = 60;
-            int i = 0;
-            int j = 0;
-            boolean o = true;
-            int racha = 0;
-            while (i < tareas && j < tareas) {
-                if (i >= j) {
-                    j++;
-                } else {
-                    if (i == 0) {
-                        o = true;
-                        racha = 3;
-                    } else if (j <= (tareas/2)-1) {
-                        o = true;
-                        racha = 2;
-                    } else if (j < tareas/2) {
-                        o = true;
-                        racha = 3;
-                    } else if (j == tareas/2) {
-                        o = false;
-                        racha = 3;
-                    } else if (j > tareas/2 && j < tareas-1) {
-                        o = false;
-                        racha = 2;
-                    } else if (j == tareas-1){
-                        o = false;
-                        racha = 3;
-                    }
-                    
-                    for (int k = 0; k < racha; k++) {
-                        if (o && j < tareas) {
-                            matrizAdy[i][j] = 1;
-                            j++;
-                        } else if (!o && i < tareas - 1 && (i != j || i < j)) {
-                            matrizAdy[i][j] = 1;
-                            i++;
-                        }
-                    }
-                    
-                    if (o) {
-                        i++;
-                    } else {
+        int i = 0;
+        int j = 0;
+        boolean o = true;
+        int racha = 0;
+        while (i < tareas && j < tareas) {
+            if (i >= j) {
+                j++;
+            } else {
+                if (i == 0) {
+                    o = true;
+                    racha = 3;
+                } else if (j <= (tareas / 2) - 1) {
+                    o = true;
+                    racha = 2;
+                } else if (j < tareas / 2) {
+                    o = true;
+                    racha = 3;
+                } else if (j == tareas / 2) {
+                    o = false;
+                    racha = 3;
+                } else if (j > tareas / 2 && j < tareas - 1) {
+                    o = false;
+                    racha = 2;
+                } else if (j == tareas - 1) {
+                    o = false;
+                    racha = 3;
+                }
+
+                for (int k = 0; k < racha; k++) {
+                    if (o && j < tareas) {
+                        matrizAdy[i][j] = 1;
                         j++;
+                    } else if (!o && i < tareas - 1 && (i != j || i < j)) {
+                        matrizAdy[i][j] = 1;
+                        i++;
                     }
+                }
+
+                if (o) {
+                    i++;
+                } else {
+                    j++;
                 }
             }
         }
-        
-        for (int i = 0; i < tareas; i++) {
-            for (int j = 0; j < tareas; j++) {
-                System.out.print(matrizAdy[i][j]+", ");
+
+        for (int k = 0; k < tareas; k++) {
+            for (int l = 0; l < tareas; l++) {
+                System.out.print(matrizAdy[k][l] + ", ");
             }
             System.out.println("");
         }
@@ -368,7 +363,22 @@ public class ProyectoAlgoritmosII {
             estaciones.add(est);
         }
     }
-    public static ArrayList<Tarea> usados = new ArrayList<>();
+    
+    public static boolean revisarPrevios(Tarea tarea, ArrayList<Tarea> usados){
+        boolean result = true;
+        ArrayList<Tarea> previos = tarea.getPrevios();
+        for(Tarea prev : previos){
+            if(!usados.contains(prev)){
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * ---------------------- ALGORITMO DINÁMICO ----------------------
+     */
     
     public static void algoritmoDinamico(int ciclo){   
         ArrayList<Estacion> estacionesF = new ArrayList<>();
@@ -383,7 +393,7 @@ public class ProyectoAlgoritmosII {
             String tareasS = "Tareas en la estación y duración de cada tarea: ";
             ArrayList<Tarea> tareasE = esta.getTareas();
             for(Tarea tarea : tareasE){
-                tareasS = tareasS + "Tarea#" + tarea.getNumero() + ", duracion: " + tarea.getTiempo() + "; ";
+                tareasS = tareasS + "Tarea #" + tarea.getNumero() + ", duracion: " + tarea.getTiempo() + "; ";
             }
             System.out.println(tareasS);
             System.out.println("");
@@ -439,15 +449,104 @@ public class ProyectoAlgoritmosII {
         return escogido;
     }
     
-    public static boolean revisarPrevios(Tarea tarea, ArrayList<Tarea> usados){
-        boolean result = true;
-        ArrayList<Tarea> previos = tarea.getPrevios();
-        for(Tarea prev : previos){
-            if(!usados.contains(prev)){
-                result = false;
-                break;
+    /**
+     * ---------------------- ALGORITMO GENÉTICO ----------------------
+     */
+    
+    public static void algoritmoGenetico(int ciclo) {
+        llenarPadres(ciclo);
+        sacarPuntos();
+        
+        if (apto(hijo1)) {
+            System.out.println("El hijo 1 es apto");
+        }
+        if (apto(hijo2)) {
+            System.out.println("El hijo 2 es apto");
+        }
+    }
+    
+    public static void llenarPadres(int ciclo) {
+        padre1 = inicializarPadre(ciclo, padre1);
+        padre2 = inicializarPadre(ciclo, padre2);
+        usados = new ArrayList<>();
+        ArrayList<Tarea> pendientes = new ArrayList<>();
+        Random r = new Random();
+        
+        ArrayList<Tarea> tareas = grafo.getTareas();
+        for (Tarea t : tareas) {
+            if (t.getPrevios().isEmpty()) {
+                padre1.get(0).addTarea(t);
+            } else {
+                int i = r.nextInt(padre1.size());
+                padre1.get(i).addTarea(t);
             }
         }
-        return result;
+        for (Tarea t : tareas) {
+            if (t.getPrevios().isEmpty()) {
+                padre2.get(0).addTarea(t);
+            } else {
+                int i = r.nextInt(padre2.size());
+                padre2.get(i).addTarea(t);
+            }
+        }
+    }
+    
+     public static ArrayList<Estacion> inicializarPadre(int ciclo, ArrayList<Estacion> padre){
+        padre = new ArrayList<>();
+        
+        int tiempoT = grafo.sumarTiempos();
+        System.out.println("Tiempo de tareas total: " + tiempoT);
+        int estacionesI = tiempoT / ciclo;
+        System.out.println("Estaciones totales: " + estacionesI);
+        for(int i = 1; i < (estacionesI + 1); i++){
+            Estacion est = new Estacion(i, ciclo);
+            padre.add(est);
+        }
+        return padre;
+    }
+     
+     public static void sacarPuntos() {
+        Random r = new Random();
+        int punto1 = r.nextInt(padre1.size());
+        int punto2 = r.nextInt(padre1.size());
+        
+        if (punto1 != punto2) {
+            cruce(punto1, punto2, padre1, padre2);
+        } else {
+            sacarPuntos();
+        }
+     }
+     
+    public static void cruce(int punto1, int punto2, ArrayList<Estacion> padre1, ArrayList<Estacion> padre2) {
+        hijo1 = new ArrayList<>();
+        hijo2 = new ArrayList<>();
+        
+        for (int i = 0; i < padre1.size(); i++) {
+            if (i != punto1 || i != punto2) {
+                hijo1.add(padre2.get(i));
+            } else {
+                hijo1.add(padre1.get(i));
+            }
+        }
+        
+        for (int i = 0; i < padre2.size(); i++) {
+            if (i != punto1 || i != punto2) {
+                hijo2.add(padre1.get(i));
+            } else {
+                hijo2.add(padre2.get(i));
+            }
+        }
+    }
+    
+    public static boolean apto(ArrayList<Estacion> hijo) {
+        usados = new ArrayList<>();
+        for (int i = 0; i < hijo.size(); i++) {
+            for (int j = 0; j < hijo.get(i).getTareas().size(); j++) {
+                if (!revisarPrevios(hijo.get(i).getTareas().get(j), usados)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
