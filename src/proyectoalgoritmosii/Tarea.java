@@ -11,6 +11,12 @@ import java.util.ArrayList;
  *
  * @author Javier
  */
+
+/*FECHA DE CREACION: 18/10/19
+ULTIMA MODIFICACION:20/10/19
+
+Posee un numero que la identifica, un tiempo de ejecucion que representa el tiempo que toma completar la tarea y
+una lista de los vertices que son requisitos de este y los que son adyacentes de este*/
 public class Tarea {
     private int numero;
     private int tiempo;

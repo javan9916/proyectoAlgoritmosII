@@ -263,11 +263,14 @@ public class ProyectoAlgoritmosII {
             case "5":
                 System.out.println("Ha seleccionado 120 tareas.");
                 tareas = 120;
+                crearMatriz();
                 crearTareas(ciclo);
                 break;
             case "6":
                 System.out.println("Ha seleccionado 1200 tareas.");
                 tareas = 1200;
+                crearMatriz();
+                crearTareas(ciclo);
             default: 
                 System.out.println("Elección inválida, por favor seleccione una opcción válida.");
                 menuTamano(ciclo);
@@ -362,6 +365,7 @@ public class ProyectoAlgoritmosII {
             for (int l = 0; l < tareas; l++) {
                 System.out.print(matrizAdy[k][l] + ", ");
             }
+            System.out.println("");
         }
     }
             
@@ -443,7 +447,12 @@ public class ProyectoAlgoritmosII {
     /**
      * ---------------------- ALGORITMO DINÁMICO ----------------------
      */
+    /*FECHA DE CREACION: 21/10/19
+    ULTIMA MODIFICACION: 10/11/19
+    CREADOR: Carlos
     
+    algoritmo dinamico, llena las estaciones con las tareas de mayor tiempo que cumplan con las condiciones (tener todos
+    sus previos cumplidos) hasta llenarlas, avanzando de estacion cuando la anterior no puede alvergar la tarea mayor*/
     public static void algoritmoDinamico(int ciclo){
         asigsDina = 0;
         compsDina = 0;
@@ -477,6 +486,12 @@ public class ProyectoAlgoritmosII {
         optimizador(estaciones, ciclo);
     }
     
+    /*FECHA DE CREACION: 21/10/19
+    ULTIMA MODIFICACION: 10/11/19
+    CREADOR: Carlos
+    
+    cada etapa del algoritmo dinamico. determina los candidatos para ser añadidos (tareas adyacentes a otras ya añadidas que tengan
+    todos sus requeridos cumplidos, determina el de mayor tiempo y lo añade a la estacion si esta tiene suficiente espacio; si no, marca la estacion como llena.*/
     public static Estacion etapa(Estacion estacion, int iteracion){                            lineaDina++;
         if(usados.size() == tareas){                                            compsDina++; lineaDina++;
             return estacion;
@@ -492,9 +507,9 @@ public class ProyectoAlgoritmosII {
             System.out.println("");
             return estacion;
         }
-        ArrayList<Tarea> candidatos = sacarCandidatos(usados);                  asigsDina++; lineaDina++;
+        ArrayList<Tarea> candidatos = sacarCandidatos(usados, estacion.getRestante());                  asigsDina++; lineaDina++;
         Tarea escogido = escogerCandidato(candidatos, usados);                  asigsDina++; lineaDina++;
-        if(escogido.getTiempo() > estacion.getRestante()){                      compsDina++; lineaDina++;
+        if(escogido == null){                                                   compsDina++; lineaDina++;
             estacion.setLlena(true);                                            asigsDina++; lineaDina++; lineaDina++;
             //if(iteracion <= 10){
                 printEtapa(candidatos, escogido, iteracion);
@@ -508,22 +523,33 @@ public class ProyectoAlgoritmosII {
         usados.add(escogido);                                                   asigsDina++; lineaDina++; lineaDina++;        
         return estacion;
     }
+    /*FECHA DE CREACION: 20/10/19
+    ULTIMA MODIFICACION: 12/11/19
+    CREADOR: Carlos
     
-    public static ArrayList<Tarea> sacarCandidatos(ArrayList<Tarea> usados){
+    determina los candidatos en una etapa en base a las tareas ya usadas, revisando todos sus adyacentes y
+    corroborando que tengan sus requisistos cumplidos*/
+    public static ArrayList<Tarea> sacarCandidatos(ArrayList<Tarea> usados, int restante){
         ArrayList<Tarea> candidatos = new ArrayList<Tarea>();                   asigsDina++; lineaDina++;
         
         for(Tarea usado : usados){                                              asigsDina++; compsDina++; lineaDina++;
             ArrayList<Tarea> adyacentes = usado.getAdyacentes();                asigsDina++; lineaDina++;
             for(Tarea adya : adyacentes){                                       asigsDina++; compsDina++; lineaDina++; lineaDina++;
                 if((!usados.contains(adya)) && (!candidatos.contains(adya))){   compsDina++; lineaDina++;
-                    candidatos.add(adya);                                       asigsDina++; lineaDina++;
+                    if(adya.getTiempo() <= restante){                           compsDina++; lineaDina++;
+                        candidatos.add(adya);                                   asigsDina++; lineaDina++;
+                    }                                                           
                 }
             }
         }
                                                                                 lineaDina++;
         return candidatos;
     }
+    /*FECHA DE CREACION: 20/10/19
+    ULTIMA MODIFICACION: 20/10/19
+    CREADOR: Carlos
     
+    Determina el candidayo de mayor tiempo*/
     public static Tarea escogerCandidato(ArrayList<Tarea> candidatos, ArrayList<Tarea> usados){
         Tarea escogido = null;                                                  asigsDina++; lineaDina++;
         int mayor = 0;                                                          asigsDina++; lineaDina++; lineaDina++;
@@ -537,6 +563,12 @@ public class ProyectoAlgoritmosII {
         }                                                                       lineaDina++;
         return escogido;
     }
+    
+    /*FECHA DE CREACION: 20/10/19
+    ULTIMA MODIFICACION: 20/10/19
+    CREADOR: Carlos
+    
+    Recibe una tarea y revisa que todos sus requisitos esten en la lista de usados*/
     public static boolean revisarPrevios(Tarea tarea, ArrayList<Tarea> usados){
         boolean result = true;                                                  asigsDina++; lineaDina++;
         ArrayList<Tarea> previos = tarea.getPrevios();                          asigsDina++; lineaDina++; lineaDina++;
@@ -548,7 +580,11 @@ public class ProyectoAlgoritmosII {
         }                                                                       lineaDina++;
         return result;
     }
+    /*FECHA DE CREACION: 10/11/19
+    ULTIMA MODIFICACION: 10/11/19
+    CREADOR: Carlos
     
+    Imprime la informacion de las etapas*/
     public static void printEtapa(ArrayList<Tarea> candidatos, Tarea escogido, int iteracion){
         System.out.println("");
         System.out.println("Etapa " + iteracion);
@@ -563,10 +599,20 @@ public class ProyectoAlgoritmosII {
             candidadosS = candidadosS + String.valueOf(candidato.getNumero()) + ", ";
         }
         System.out.println(candidadosS);
-        System.out.println("Escogido: " + escogido.getNumero());
+        if(escogido == null){
+            System.out.println("Escogido: ninguno");
+        }else{
+            System.out.println("Escogido: " + escogido.getNumero());
+        }
         System.out.println("");
     }
     
+    /*FECHA DE CREACION: 31/10/19
+    ULTIMA MODIFICACION: 31/10/19
+    CREADOR: Carlos
+    
+    Determina si es posible disminuir el tiempo de ciclo (y de ser así, qué tanto se puede disminuir) para
+    optimizar aún más la respuesta*/
     public static void optimizador(ArrayList<Estacion> estaciones, int ciclo){
         System.out.println("OPTIMIZACION FINAL DE LAS ESTACIONES Y TIEMPO DE CICLO \n");
         int optimizacion = 0;                                                   asigsDina++; lineaDina++; lineaDina++;
@@ -597,6 +643,11 @@ public class ProyectoAlgoritmosII {
         menuTamano(ciclo);
     }
     
+    /*FECHA DE CREACION: 31/10/19
+    ULTIMA MODIFICACION: 31/10/19
+    CREADOR: Carlos
+    
+    determina si aun es posible disminuir mas el tiempo de cilo*/
     public static boolean posible(ArrayList<Estacion> estaciones, int optimizacion){
         boolean result = true;                                                  asigsDina++; lineaDina++; lineaDina++;
         for(Estacion estacion : estaciones){                                    asigsDina++; compsDina++; lineaDina++; lineaDina++;

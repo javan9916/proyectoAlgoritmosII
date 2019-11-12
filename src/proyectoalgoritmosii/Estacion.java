@@ -11,6 +11,12 @@ import java.util.ArrayList;
  *
  * @author carlo
  */
+
+/*FECHA DE CREACION: 18/10/19
+ULTIMA MODIFICACION:25/10/19
+
+Contiene una lista de las tareas asignadas dentro de ella, un numero que la identifica, una condicion de llena (que
+siginifica que ya no puede recibir mas tareas, restante que significa el tiempo posible para añadir nuevas tareas*/
 public class Estacion {
     private int numero;
     private int restante;
@@ -48,7 +54,7 @@ public class Estacion {
     public ArrayList<Tarea> getTareas() {
         return tareas;
     }
-    
+    //reduce el tiempo restante en la fase de optimizacion
     public void optimizar(int optimizacion){
         restante = restante - optimizacion;
     }
