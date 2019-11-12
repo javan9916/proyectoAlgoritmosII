@@ -28,7 +28,6 @@ public class ProyectoAlgoritmosII {
      *  estaciones es la lista de estaciones, generadas segun la formala tiempo_total_de_tareas/tiempo_de_ciclo,
      *  usados es una lista que almacena las tareas que ya se han procesado durante la ejecucion de un algoritmo
      */
-    public static String algoritmo;
     public static int tareas;
     public static Grafo grafo = new Grafo();
     public static ArrayList<Estacion> estaciones = new ArrayList<>();
@@ -202,10 +201,11 @@ public class ProyectoAlgoritmosII {
     
     public static void pedirDatos(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Especifique las horas de trabajo diarias.");
+        System.out.print("Especifique las horas de trabajo diarias: ");
         String horasS = scanner.next();
-        System.out.println("Especifique la cantidad de produccion diaria.");
+        System.out.print("Especifique la cantidad de produccion diaria: ");
         String produS = scanner.next();
+        System.out.println("");
         int ciclo = 0;
         try {
             int horas = Integer.valueOf(horasS);
@@ -233,7 +233,7 @@ public class ProyectoAlgoritmosII {
                 + "4) 60   tareas\n"
                 + "5) 120  tareas\n"
                 + "6) 1200 tareas");
-        System.out.println("Opción: ");
+        System.out.print("Opción: ");
         String option = scanner.next();
            switch(option){
             case "1":
@@ -268,6 +268,7 @@ public class ProyectoAlgoritmosII {
             case "6":
                 System.out.println("Ha seleccionado 1200 tareas.");
                 tareas = 1200;
+                crearMatriz();
             default: 
                 System.out.println("Elección inválida, por favor seleccione una opcción válida.");
                 menuTamano(ciclo);
@@ -285,17 +286,15 @@ public class ProyectoAlgoritmosII {
         System.out.println("Algoritmos:\n"
                 + "1) Programación dinámica\n"
                 + "2) Algoritmo genético\n");
-        System.out.println("Opción: ");
+        System.out.print("Opción: ");
         String option = scanner.next();
         switch(option){
             case "1":
                 System.out.println("Ha seleccionado programación dinámica.");
-                algoritmo = "d";
                 algoritmoDinamico(ciclo);
                 break;
             case "2":
                 System.out.println("Ha seleccionado el algoritmo genético.");
-                algoritmo = "g";
                 algoritmoGenetico(ciclo);
                 break;
             default: 
@@ -615,12 +614,20 @@ public class ProyectoAlgoritmosII {
     public static void algoritmoGenetico(int ciclo) {
         llenarPadres(ciclo);
         sacarPuntos();
-        
-        if (apto(hijo1)) {
-            System.out.println("El hijo 1 es apto");
-        }
-        if (apto(hijo2)) {
-            System.out.println("El hijo 2 es apto");
+        probarHijos();
+       
+    }
+    
+    public static void probarHijos () {
+        if (apto(hijo1) && apto(hijo2)) {
+            System.out.println("Las dos son true");
+        } else if (apto(hijo1)) {
+            System.out.println("H1 es true");
+        } else if (apto(hijo2)) {
+            System.out.println("H2 es true");
+        } else {
+            sacarPuntos();
+            probarHijos();
         }
     }
     
@@ -640,6 +647,7 @@ public class ProyectoAlgoritmosII {
                 padre1.get(i).addTarea(t);
             }
         }
+        
         for (Tarea t : tareas) {
             if (t.getPrevios().isEmpty()) {
                 padre2.get(0).addTarea(t);
@@ -650,7 +658,7 @@ public class ProyectoAlgoritmosII {
         }
     }
     
-     public static ArrayList<Estacion> inicializarPadre(int ciclo, ArrayList<Estacion> padre){
+    public static ArrayList<Estacion> inicializarPadre(int ciclo, ArrayList<Estacion> padre){
         padre = new ArrayList<>();
         
         int tiempoT = grafo.sumarTiempos();
@@ -681,18 +689,18 @@ public class ProyectoAlgoritmosII {
         hijo2 = new ArrayList<>();
         
         for (int i = 0; i < padre1.size(); i++) {
-            if (i != punto1 || i != punto2) {
-                hijo1.add(padre2.get(i));
-            } else {
+            if (i == punto1 || i == punto2) {
                 hijo1.add(padre1.get(i));
+            } else {
+                hijo1.add(padre2.get(i));
             }
         }
         
         for (int i = 0; i < padre2.size(); i++) {
-            if (i != punto1 || i != punto2) {
-                hijo2.add(padre1.get(i));
-            } else {
+            if (i == punto1 || i == punto2) {
                 hijo2.add(padre2.get(i));
+            } else {
+                hijo2.add(padre1.get(i));
             }
         }
     }
