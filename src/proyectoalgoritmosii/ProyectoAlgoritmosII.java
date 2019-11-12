@@ -15,19 +15,42 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Javier
  */
 public class ProyectoAlgoritmosII {
+    /*
+    PROYECTO ANALSIS 2
+    FECHA DE CREACION: 18/10/19
+    ULTIMA MODIFICACION: 17/11/19*/
     
+    /*FECHA DE CREACION: 18/10/19
+    ULTIMA MODIFICACION: 02/11/19
+    CREADOR: Carlos
+    
+    Algoritmo es una variable que guarda qué algoritmo se ha escogido ejecutar en el menuAlgoritmo,
+    tareas se refiere a la cantidad de tareas que se ha escogido trabajar en el menuTamaño,
+    grafo es el objeto grafo que almacena las tareas y sus conecciones,
+    estaciones es la lista de estaciones, generadas segun la formala tiempo_total_de_tareas/tiempo_de_ciclo,
+    usados es una lista que almacena las tareas que ya se han procesado durante la ejecucion de un algritmo*/
     public static String algoritmo;
     public static int tareas;
     public static Grafo grafo;
     public static ArrayList<Estacion> estaciones;
     public static ArrayList<Tarea> usados;
     
+    
+    /*FECHA DE CREACION: 08/11/19
+    ULTIMA MODIFICACION: 10/11/19
+    CREADOR: Carlos
+    
+    Variables utilizadas para la medicion empririca del algoritmo dinamico*/
     static int compsDina = 0;
     static int asigsDina = 0;
     static int lineaDina = 0;
     
     
+    /*FECHA DE CREACION: 18/10/19
+    ULTIMA MODIFICACION: 20/10/19
+    CREADOR: Javier(10, 20, 30) y Carlos(60)
     
+    Matrices base para la creacion de las tareas y sus conecciones*/
     public static int [][] matrizAdy;
                                       //A,B,C,D,E,F,G,H,I,J
     public static int [][] matriz10 = {{0,1,1,1,0,0,0,0,0,0},//A
@@ -161,7 +184,12 @@ public class ProyectoAlgoritmosII {
     public static void main(String[] args) {
         pedirDatos();
     }
+    /*FECHA DE CREACION: 20/10/19
+    ULTIMA MODIFICACION: 20/10/19
+    CREADOR: Carlos
     
+    Algoritmo que pide en consola los datos de horas de trabajo y produccion total diaria,
+    necesarios para el calculo de tiempo de cilo, devolviendo este ultimo dato*/
     public static void pedirDatos(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Especifique las horas de trabajo diarias.");
@@ -180,16 +208,21 @@ public class ProyectoAlgoritmosII {
         System.out.println("Tiempo de ciclo: " + ciclo);
         menuTamano(ciclo);
     }
+    /*FECHA DE CREACION: 18/10/19
+    ULTIMA MODIFICACION: 18/10/19
+    CREADOR: Carlos
     
+    Menu que perimite al usuario escoger desde consola la cantidad de tareas a trabajar*/
     public static void menuTamano(int ciclo){
         Scanner scanner = new Scanner(System.in);
         Random r = new Random();
         System.out.println("Seleccione la cantidad de tareas que desea optimizar:\n"
-                + "1) 10 tareas\n"
-                + "2) 20 tareas\n"
-                + "3) 30 tareas\n"
-                + "4) 60 tareas\n"
-                + "5) tareas aleatorias\n");
+                + "1) 10   tareas\n"
+                + "2) 20   tareas\n"
+                + "3) 30   tareas\n"
+                + "4) 60   tareas\n"
+                + "5) 120  tareas\n"
+                + "6) 1200 tareas");
         System.out.println("Opción: ");
         String option = scanner.next();
            switch(option){
@@ -218,17 +251,24 @@ public class ProyectoAlgoritmosII {
                 crearTareas(ciclo);
                 break;
             case "5":
-                System.out.println("Ha seleccionado tareas aleatorias.");
-                tareas = r.nextInt(301-60) + 60;
+                System.out.println("Ha seleccionado 120 tareas.");
+                tareas = 120;
                 crearTareas(ciclo);
                 break;
+            case "6":
+                System.out.println("Ha seleccionado 1200 tareas.");
+                tareas = 1200;
             default: 
                 System.out.println("Elección inválida, por favor seleccione una opcción válida.");
                 menuTamano(ciclo);
                 break;
             } 
     }
+    /*FECHA DE CREACION: 18/10/19
+    ULTIMA MODIFICACION: 18/10/19
+    CREADOR: Carlos
     
+    Menu que permite al usario escoger desde consola el algoritmo a ejecutar*/
     public static void menuAlgoritmo(int ciclo) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Algoritmos:\n"
@@ -253,7 +293,11 @@ public class ProyectoAlgoritmosII {
                 break;
         }
     }
+    /*FECHA DE CREACION: 20/10/19
+    ULTIMA MODIFICACION: 12/11/19
+    CREADOR: Javier
     
+    Algoritmo que crea una matriz aleatoria para trabajar tamaños de 120 o 1200*/
     public static void crearMatriz() {
         matrizAdy = new int[tareas][tareas];
         
@@ -321,6 +365,12 @@ public class ProyectoAlgoritmosII {
             System.out.println("");
         }
     }
+    /*FECHA DE CREACION: 30/10/19
+    ULTIMA MODIFICACION: 30/10/19
+    CREADOR: Carlos
+    
+    Algoritmo que crea una cantidad de tareas, con tiempos aleatorios y sus respectivas relaciones de dependencia y adyacencia,
+    segun se especifico en el menuTamaño y las introduce en el grafo*/
     
     public static void crearTareas(int ciclo){
         grafo = new Grafo();
@@ -343,7 +393,11 @@ public class ProyectoAlgoritmosII {
         crearEstaciones(ciclo);
         menuAlgoritmo(ciclo);
     }
+    /*FECHA DE CREACION: 30/10/19
+    ULTIMA MODIFICACION: 30/10/19
+    CREADOR: Carlos
     
+    Imprime los datos de cada tarea creada*/
     public static void printTareas(){
         System.out.println("TAREAS CREADAS SEGUN DATOS PROPORCIONADOS \n");
         ArrayList<Tarea> tareasO = grafo.getTareas();
@@ -367,7 +421,11 @@ public class ProyectoAlgoritmosII {
         }
         System.out.println("");
     }
-
+    /*FECHA DE CREACION: 30/10/19
+    ULTIMA MODIFICACION: 30/10/19
+    CREADOR: Carlos
+    
+    Crea una determinada cantidad de estaciones segun la formula especificada*/
     public static void crearEstaciones(int ciclo){
         estaciones = new ArrayList<>();
         int tiempoT = grafo.sumarTiempos();
@@ -384,11 +442,13 @@ public class ProyectoAlgoritmosII {
         asigsDina = 0;
         compsDina = 0;
         lineaDina = 0;
+        int iteracion = 0;
         usados = new ArrayList<>();                                             asigsDina++; lineaDina++;
         ArrayList<Estacion> estacionesF = new ArrayList<>();                    asigsDina++; lineaDina++;                                            
         for(Estacion est : estaciones){                                         asigsDina++; compsDina++; lineaDina++;                                                                  
             while(!est.getLlena()){                                             compsDina++; lineaDina++;                           
-                est = etapa(est);                                               asigsDina++; lineaDina++;                                                       
+                est = etapa(est, iteracion);                                               asigsDina++; lineaDina++;                                                       
+                iteracion++;
             }
             estacionesF.add(est);                                               asigsDina++; lineaDina++;                                                      
         }
@@ -411,23 +471,35 @@ public class ProyectoAlgoritmosII {
         optimizador(estaciones, ciclo);
     }
     
-    public static Estacion etapa(Estacion estacion){                            lineaDina++;
+    public static Estacion etapa(Estacion estacion, int iteracion){                            lineaDina++;
         if(usados.size() == tareas){                                            compsDina++; lineaDina++;
             return estacion;
         }else if(usados.isEmpty()){                                             compsDina++; lineaDina++;
             Tarea primero = grafo.getTareas().get(0);                           asigsDina++; lineaDina++;
             estacion.addTarea(primero);                                         asigsDina++; lineaDina++;
             usados.add(primero);                                                asigsDina++; lineaDina++; lineaDina++;
+            System.out.println("");
+            System.out.println("Etapa: " + iteracion);
+            System.out.println("Usados: Ninguno" );
+            System.out.println("Candidatos: 1");
+            System.out.println("Escogido: 1");
+            System.out.println("");
             return estacion;
         }
         ArrayList<Tarea> candidatos = sacarCandidatos(usados);                  asigsDina++; lineaDina++;
         Tarea escogido = escogerCandidato(candidatos, usados);                  asigsDina++; lineaDina++;
         if(escogido.getTiempo() > estacion.getRestante()){                      compsDina++; lineaDina++;
             estacion.setLlena(true);                                            asigsDina++; lineaDina++; lineaDina++;
+            //if(iteracion <= 10){
+                printEtapa(candidatos, escogido, iteracion);
+            //}
             return estacion;
         }
+        //if(iteracion <= 10){
+            printEtapa(candidatos, escogido, iteracion);
+        //}
         estacion.addTarea(escogido);                                            asigsDina++; lineaDina++;
-        usados.add(escogido);                                                   asigsDina++; lineaDina++; lineaDina++;
+        usados.add(escogido);                                                   asigsDina++; lineaDina++; lineaDina++;        
         return estacion;
     }
     
@@ -470,6 +542,24 @@ public class ProyectoAlgoritmosII {
             }
         }                                                                       lineaDina++;
         return result;
+    }
+    
+    public static void printEtapa(ArrayList<Tarea> candidatos, Tarea escogido, int iteracion){
+        System.out.println("");
+        System.out.println("Etapa " + iteracion);
+        
+        String usadosS = "Usados: ";
+        for(Tarea usado : usados){
+            usadosS = usadosS + String.valueOf(usado.getNumero()) + ", ";
+        }
+        System.out.println(usadosS);
+        String candidadosS = "Candidatos: ";
+        for(Tarea candidato : candidatos){
+            candidadosS = candidadosS + String.valueOf(candidato.getNumero()) + ", ";
+        }
+        System.out.println(candidadosS);
+        System.out.println("Escogido: " + escogido.getNumero());
+        System.out.println("");
     }
     
     public static void optimizador(ArrayList<Estacion> estaciones, int ciclo){
