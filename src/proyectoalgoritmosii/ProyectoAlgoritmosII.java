@@ -5,6 +5,7 @@
  */
 package proyectoalgoritmosii;
 
+import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -49,22 +50,22 @@ public class ProyectoAlgoritmosII {
     static int lineaDina = 0;
     
     /*FECHA DE CREACION: 18/10/19
-    ULTIMA MODIFICACION: 20/10/19
-    CREADOR: Javier(10, 20, 30) y Carlos(60)
+    ULTIMA MODIFICACION: 15/11/19
+    CREADOR: Javier(20, 30) y Carlos(10, 60)
     
     Matrices base para la creacion de las tareas y sus conecciones*/
     public static int [][] matrizAdy;
-                                      //A,B,C,D,E,F,G,H,I,J
-    public static int [][] matriz10 = {{0,1,1,1,0,0,0,0,0,0},//A
-                                       {0,0,0,0,0,1,0,0,0,0},//B
-                                       {0,0,0,0,0,1,0,0,0,0},//C
-                                       {0,0,0,0,1,0,1,0,1,0},//D
-                                       {0,0,0,0,0,0,0,1,0,0},//E
-                                       {0,0,0,0,0,0,0,0,1,0},//F
-                                       {0,0,0,0,0,0,0,1,0,0},//G
-                                       {0,0,0,0,0,0,0,0,0,1},//H
-                                       {0,0,0,0,0,0,0,0,0,1},//I
-                                       {0,0,0,0,0,0,0,0,0,0}};//J
+                                      //1,2,3,4,5,6,7,8,9,10
+    public static int [][] matriz10 = {{0,1,1,1,0,0,0,0,0,0},//1
+                                       {0,0,0,0,1,1,0,0,0,0},//2
+                                       {0,0,0,0,0,0,1,0,0,0},//3
+                                       {0,0,0,0,0,0,1,0,0,0},//4
+                                       {0,0,0,0,0,0,0,1,0,0},//5
+                                       {0,0,0,0,0,0,0,1,0,0},//6
+                                       {0,0,0,0,0,0,0,0,1,0},//7
+                                       {0,0,0,0,0,0,0,0,0,1},//8
+                                       {0,0,0,0,0,0,0,0,0,1},//9
+                                       {0,0,0,0,0,0,0,0,0,0}};//10
     
 
                                        //A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T
@@ -493,7 +494,8 @@ public class ProyectoAlgoritmosII {
     cada etapa del algoritmo dinamico. determina los candidatos para ser añadidos (tareas adyacentes a otras ya añadidas que tengan
     todos sus requeridos cumplidos, determina el de mayor tiempo y lo añade a la estacion si esta tiene suficiente espacio; si no, marca la estacion como llena.*/
     public static Estacion etapa(Estacion estacion, int iteracion){                            lineaDina++;
-        if(usados.size() == tareas){                                            compsDina++; lineaDina++;
+        if(usados.size() == tareas){
+            estacion.setLlena(true);                                            compsDina++; lineaDina++;
             return estacion;
         }else if(usados.isEmpty()){                                             compsDina++; lineaDina++;
             Tarea primero = grafo.getTareas().get(0);                           asigsDina++; lineaDina++;
