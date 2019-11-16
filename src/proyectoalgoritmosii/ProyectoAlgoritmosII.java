@@ -614,46 +614,48 @@ public class ProyectoAlgoritmosII {
     public static void algoritmoGenetico(int ciclo) {
         llenarPadres(ciclo);
         sacarPuntos();
-        probarHijos();
        
-    }
-    
-    public static void probarHijos () {
-        if (apto(hijo1) && apto(hijo2)) {
-            System.out.println("Las dos son true");
-        } else if (apto(hijo1)) {
-            System.out.println("H1 es true");
-        } else if (apto(hijo2)) {
-            System.out.println("H2 es true");
-        } else {
-            sacarPuntos();
-            probarHijos();
-        }
     }
     
     public static void llenarPadres(int ciclo) {
         padre1 = inicializarPadre(ciclo, padre1);
         padre2 = inicializarPadre(ciclo, padre2);
         usados = new ArrayList<>();
-        ArrayList<Tarea> pendientes = new ArrayList<>();
+        ArrayList<Tarea> adyacentes = new ArrayList<>();
         Random r = new Random();
         
         ArrayList<Tarea> tareas = grafo.getTareas();
-        for (Tarea t : tareas) {
-            if (t.getPrevios().isEmpty()) {
-                padre1.get(0).addTarea(t);
-            } else {
-                int i = r.nextInt(padre1.size());
-                padre1.get(i).addTarea(t);
+        Tarea ta = tareas.get(0);
+        padre1.get(0).addTarea(ta);
+        usados.add(ta);
+        
+        for (int i = 0; i < padre1.size(); i++) {
+            for (Tarea t : tareas) {
+                if (padre1.get(i).getRestante() <= ciclo) {
+                    adyacentes = t.getAdyacentes();
+                    int a = r.nextInt(adyacentes.size());
+                    padre1.get(i).addTarea(adyacentes.get(a));
+                    usados.add(adyacentes.get(a));
+                } else {
+                    break;
+                }
             }
         }
         
-        for (Tarea t : tareas) {
-            if (t.getPrevios().isEmpty()) {
-                padre2.get(0).addTarea(t);
-            } else {
-                int i = r.nextInt(padre2.size());
-                padre2.get(i).addTarea(t);
+        usados = new ArrayList<>();
+        ta = tareas.get(0);
+        padre2.get(0).addTarea(ta);
+        usados.add(ta);
+        for (int i = 0; i < padre2.size(); i++) {
+            for (Tarea t : tareas) {
+                if (padre2.get(i).getRestante() <= ciclo) {
+                    adyacentes = t.getAdyacentes();
+                    int a = r.nextInt(adyacentes.size());
+                    padre2.get(i).addTarea(adyacentes.get(a));
+                    usados.add(adyacentes.get(a));
+                } else {
+                    break;
+                }
             }
         }
     }
@@ -682,6 +684,18 @@ public class ProyectoAlgoritmosII {
         } else {
             sacarPuntos();
         }
+     }
+     
+     public static ArrayList<Tarea> actualizarCandidatos(ArrayList<Tarea> candidatos, ArrayList<Tarea> usados) {
+        for(Tarea usado : usados){                
+            ArrayList<Tarea> adyacentes = usado.getAdyacentes();
+            for(Tarea adya : adyacentes){
+                if((!usados.contains(adya)) && (!candidatos.contains(adya))){
+                    candidatos.add(adya);
+                }
+            }
+        }                                                                      lineaDina++;
+        return candidatos;
      }
      
     public static void cruce(int punto1, int punto2, ArrayList<Estacion> padre1, ArrayList<Estacion> padre2) {

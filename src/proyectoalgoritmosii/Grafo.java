@@ -41,5 +41,4 @@ public class Grafo {
     public void addRequisito(int tarea, int previo){
         tareas.get(tarea).addPrevio(tareas.get(previo));
     }
-    
 }
