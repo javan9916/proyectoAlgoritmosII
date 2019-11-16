@@ -271,10 +271,7 @@ public class ProyectoAlgoritmosII {
                 System.out.println("Ha seleccionado 1200 tareas.");
                 tareas = 1200;
                 crearMatriz();
-<<<<<<< HEAD
                 crearTareas(ciclo);
-=======
->>>>>>> fa4daaa7fc37147febca6a982ae64f2ee29c0d73
             default: 
                 System.out.println("Elección inválida, por favor seleccione una opcción válida.");
                 menuTamano(ciclo);
