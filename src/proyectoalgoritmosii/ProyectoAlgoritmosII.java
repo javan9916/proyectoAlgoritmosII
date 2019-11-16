@@ -29,7 +29,6 @@ public class ProyectoAlgoritmosII {
      *  estaciones es la lista de estaciones, generadas segun la formala tiempo_total_de_tareas/tiempo_de_ciclo,
      *  usados es una lista que almacena las tareas que ya se han procesado durante la ejecucion de un algoritmo
      */
-    public static String algoritmo;
     public static int tareas;
     public static Grafo grafo = new Grafo();
     public static ArrayList<Estacion> estaciones = new ArrayList<>();
@@ -203,10 +202,11 @@ public class ProyectoAlgoritmosII {
     
     public static void pedirDatos(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Especifique las horas de trabajo diarias.");
+        System.out.print("Especifique las horas de trabajo diarias: ");
         String horasS = scanner.next();
-        System.out.println("Especifique la cantidad de produccion diaria.");
+        System.out.print("Especifique la cantidad de produccion diaria: ");
         String produS = scanner.next();
+        System.out.println("");
         int ciclo = 0;
         try {
             int horas = Integer.valueOf(horasS);
@@ -234,7 +234,7 @@ public class ProyectoAlgoritmosII {
                 + "4) 60   tareas\n"
                 + "5) 120  tareas\n"
                 + "6) 1200 tareas");
-        System.out.println("Opción: ");
+        System.out.print("Opción: ");
         String option = scanner.next();
            switch(option){
             case "1":
@@ -271,7 +271,10 @@ public class ProyectoAlgoritmosII {
                 System.out.println("Ha seleccionado 1200 tareas.");
                 tareas = 1200;
                 crearMatriz();
+<<<<<<< HEAD
                 crearTareas(ciclo);
+=======
+>>>>>>> fa4daaa7fc37147febca6a982ae64f2ee29c0d73
             default: 
                 System.out.println("Elección inválida, por favor seleccione una opcción válida.");
                 menuTamano(ciclo);
@@ -289,17 +292,15 @@ public class ProyectoAlgoritmosII {
         System.out.println("Algoritmos:\n"
                 + "1) Programación dinámica\n"
                 + "2) Algoritmo genético\n");
-        System.out.println("Opción: ");
+        System.out.print("Opción: ");
         String option = scanner.next();
         switch(option){
             case "1":
                 System.out.println("Ha seleccionado programación dinámica.");
-                algoritmo = "d";
                 algoritmoDinamico(ciclo);
                 break;
             case "2":
                 System.out.println("Ha seleccionado el algoritmo genético.");
-                algoritmo = "g";
                 algoritmoGenetico(ciclo);
                 break;
             default: 
@@ -668,42 +669,53 @@ public class ProyectoAlgoritmosII {
     public static void algoritmoGenetico(int ciclo) {
         llenarPadres(ciclo);
         sacarPuntos();
-        
-        if (apto(hijo1)) {
-            System.out.println("El hijo 1 es apto");
-        }
-        if (apto(hijo2)) {
-            System.out.println("El hijo 2 es apto");
-        }
+       
     }
     
     public static void llenarPadres(int ciclo) {
         padre1 = inicializarPadre(ciclo, padre1);
         padre2 = inicializarPadre(ciclo, padre2);
         usados = new ArrayList<>();
-        ArrayList<Tarea> pendientes = new ArrayList<>();
+        ArrayList<Tarea> adyacentes = new ArrayList<>();
         Random r = new Random();
         
         ArrayList<Tarea> tareas = grafo.getTareas();
-        for (Tarea t : tareas) {
-            if (t.getPrevios().isEmpty()) {
-                padre1.get(0).addTarea(t);
-            } else {
-                int i = r.nextInt(padre1.size());
-                padre1.get(i).addTarea(t);
+        Tarea ta = tareas.get(0);
+        padre1.get(0).addTarea(ta);
+        usados.add(ta);
+        
+        for (int i = 0; i < padre1.size(); i++) {
+            for (Tarea t : tareas) {
+                if (padre1.get(i).getRestante() <= ciclo) {
+                    adyacentes = t.getAdyacentes();
+                    int a = r.nextInt(adyacentes.size());
+                    padre1.get(i).addTarea(adyacentes.get(a));
+                    usados.add(adyacentes.get(a));
+                } else {
+                    break;
+                }
             }
         }
-        for (Tarea t : tareas) {
-            if (t.getPrevios().isEmpty()) {
-                padre2.get(0).addTarea(t);
-            } else {
-                int i = r.nextInt(padre2.size());
-                padre2.get(i).addTarea(t);
+        
+        usados = new ArrayList<>();
+        ta = tareas.get(0);
+        padre2.get(0).addTarea(ta);
+        usados.add(ta);
+        for (int i = 0; i < padre2.size(); i++) {
+            for (Tarea t : tareas) {
+                if (padre2.get(i).getRestante() <= ciclo) {
+                    adyacentes = t.getAdyacentes();
+                    int a = r.nextInt(adyacentes.size());
+                    padre2.get(i).addTarea(adyacentes.get(a));
+                    usados.add(adyacentes.get(a));
+                } else {
+                    break;
+                }
             }
         }
     }
     
-     public static ArrayList<Estacion> inicializarPadre(int ciclo, ArrayList<Estacion> padre){
+    public static ArrayList<Estacion> inicializarPadre(int ciclo, ArrayList<Estacion> padre){
         padre = new ArrayList<>();
         
         int tiempoT = grafo.sumarTiempos();
@@ -729,23 +741,35 @@ public class ProyectoAlgoritmosII {
         }
      }
      
+     public static ArrayList<Tarea> actualizarCandidatos(ArrayList<Tarea> candidatos, ArrayList<Tarea> usados) {
+        for(Tarea usado : usados){                
+            ArrayList<Tarea> adyacentes = usado.getAdyacentes();
+            for(Tarea adya : adyacentes){
+                if((!usados.contains(adya)) && (!candidatos.contains(adya))){
+                    candidatos.add(adya);
+                }
+            }
+        }                                                                      lineaDina++;
+        return candidatos;
+     }
+     
     public static void cruce(int punto1, int punto2, ArrayList<Estacion> padre1, ArrayList<Estacion> padre2) {
         hijo1 = new ArrayList<>();
         hijo2 = new ArrayList<>();
         
         for (int i = 0; i < padre1.size(); i++) {
-            if (i != punto1 || i != punto2) {
-                hijo1.add(padre2.get(i));
-            } else {
+            if (i == punto1 || i == punto2) {
                 hijo1.add(padre1.get(i));
+            } else {
+                hijo1.add(padre2.get(i));
             }
         }
         
         for (int i = 0; i < padre2.size(); i++) {
-            if (i != punto1 || i != punto2) {
-                hijo2.add(padre1.get(i));
-            } else {
+            if (i == punto1 || i == punto2) {
                 hijo2.add(padre2.get(i));
+            } else {
+                hijo2.add(padre1.get(i));
             }
         }
     }
