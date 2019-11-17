@@ -359,13 +359,6 @@ public class ProyectoAlgoritmosII {
                 }
             }
         }
-
-        for (int k = 0; k < tareas; k++) {
-            for (int l = 0; l < tareas; l++) {
-                System.out.print(matrizAdy[k][l] + ", ");
-            }
-            System.out.println("");
-        }
     }
             
     /*FECHA DE CREACION: 30/10/19
@@ -673,7 +666,7 @@ public class ProyectoAlgoritmosII {
         padre1 = inicializarPadre(ciclo, padre1);
         padre2 = inicializarPadre(ciclo, padre2);
         
-        if (padre1 == padre2) {
+        if (padre1.size() != padre2.size()) {
             llenarPadres(ciclo);
         } else {
             System.out.println("Padre1");
