@@ -271,10 +271,7 @@ public class ProyectoAlgoritmosII {
                 System.out.println("Ha seleccionado 1200 tareas.");
                 tareas = 1200;
                 crearMatriz();
-<<<<<<< HEAD
                 crearTareas(ciclo);
-=======
->>>>>>> fa4daaa7fc37147febca6a982ae64f2ee29c0d73
             default: 
                 System.out.println("Elección inválida, por favor seleccione una opcción válida.");
                 menuTamano(ciclo);
@@ -668,49 +665,32 @@ public class ProyectoAlgoritmosII {
     
     public static void algoritmoGenetico(int ciclo) {
         llenarPadres(ciclo);
-        sacarPuntos();
+        //sacarPuntos();
        
     }
     
     public static void llenarPadres(int ciclo) {
         padre1 = inicializarPadre(ciclo, padre1);
         padre2 = inicializarPadre(ciclo, padre2);
-        usados = new ArrayList<>();
-        ArrayList<Tarea> adyacentes = new ArrayList<>();
-        Random r = new Random();
         
-        ArrayList<Tarea> tareas = grafo.getTareas();
-        Tarea ta = tareas.get(0);
-        padre1.get(0).addTarea(ta);
-        usados.add(ta);
-        
-        for (int i = 0; i < padre1.size(); i++) {
-            for (Tarea t : tareas) {
-                if (padre1.get(i).getRestante() <= ciclo) {
-                    adyacentes = t.getAdyacentes();
-                    int a = r.nextInt(adyacentes.size());
-                    padre1.get(i).addTarea(adyacentes.get(a));
-                    usados.add(adyacentes.get(a));
-                } else {
-                    break;
+        if (padre1 == padre2) {
+            llenarPadres(ciclo);
+        } else {
+            System.out.println("Padre1");
+            for (int i = 0; i < padre1.size(); i++) {
+                System.out.print("Estación " + i + ": ");
+                for (int j = 0; j < padre1.get(i).getTareas().size(); j++) {
+                    System.out.print(padre1.get(i).getTareas().get(j).getNumero() + ", ");
                 }
+                System.out.println("");
             }
-        }
-        
-        usados = new ArrayList<>();
-        ta = tareas.get(0);
-        padre2.get(0).addTarea(ta);
-        usados.add(ta);
-        for (int i = 0; i < padre2.size(); i++) {
-            for (Tarea t : tareas) {
-                if (padre2.get(i).getRestante() <= ciclo) {
-                    adyacentes = t.getAdyacentes();
-                    int a = r.nextInt(adyacentes.size());
-                    padre2.get(i).addTarea(adyacentes.get(a));
-                    usados.add(adyacentes.get(a));
-                } else {
-                    break;
+            System.out.println("Padre2");
+            for (int i = 0; i < padre2.size(); i++) {
+                System.out.print("Estación " + i + ": ");
+                for (int j = 0; j < padre2.get(i).getTareas().size(); j++) {
+                    System.out.print(padre2.get(i).getTareas().get(j).getNumero() + ", ");
                 }
+                System.out.println("");
             }
         }
     }
@@ -718,38 +698,63 @@ public class ProyectoAlgoritmosII {
     public static ArrayList<Estacion> inicializarPadre(int ciclo, ArrayList<Estacion> padre){
         padre = new ArrayList<>();
         
-        int tiempoT = grafo.sumarTiempos();
-        System.out.println("Tiempo de tareas total: " + tiempoT);
-        int estacionesI = tiempoT / ciclo;
-        System.out.println("Estaciones totales: " + estacionesI);
-        for(int i = 1; i < (estacionesI + 1); i++){
-            Estacion est = new Estacion(i, ciclo);
-            padre.add(est);
+        Estacion est = new Estacion(0, ciclo);
+        padre.add(est);
+        return llenarPadre(padre, ciclo);
+    }
+    
+    public static ArrayList<Estacion> llenarPadre(ArrayList<Estacion> padre, int ciclo) {
+        usados = new ArrayList<>();
+        ArrayList<Tarea> candidatos = new ArrayList<>();
+        ArrayList<Tarea> tareas = grafo.getTareas();
+        Random r = new Random();
+        int index = 0;
+        
+        Tarea ta = tareas.get(0);
+        padre.get(0).addTarea(ta);
+        usados.add(ta);
+        
+        for (int i = 0; i < padre.size(); i++) {
+            for (int j = index; j < tareas.size(); j++) {
+                candidatos = actualizarCandidatos(candidatos, usados);
+                if (candidatos == null) {
+                    break;
+                }
+                int a = r.nextInt(candidatos.size());
+                if ((padre.get(i).getRestante() >= 0) && !(padre.get(i).getRestante() - candidatos.get(a).getTiempo() < 0)) {
+                    padre.get(i).addTarea(candidatos.get(a));
+                    usados.add(candidatos.get(a));
+                    index++;
+                } else {
+                    padre.get(i).setLlena(true);
+                    if (!(tareas.get(j).getAdyacentes().isEmpty())) {
+                        Estacion est = new Estacion(i+1, ciclo);
+                        padre.add(est);
+                        padre.get(i+1).addTarea(candidatos.get(a));
+                        usados.add(candidatos.get(a));
+                    }
+                    index++;
+                    break;
+                }
+            }
         }
         return padre;
     }
      
-     public static void sacarPuntos() {
-        Random r = new Random();
-        int punto1 = r.nextInt(padre1.size());
-        int punto2 = r.nextInt(padre1.size());
-        
-        if (punto1 != punto2) {
-            cruce(punto1, punto2, padre1, padre2);
-        } else {
-            sacarPuntos();
-        }
-     }
-     
      public static ArrayList<Tarea> actualizarCandidatos(ArrayList<Tarea> candidatos, ArrayList<Tarea> usados) {
+        candidatos = new ArrayList<>();
         for(Tarea usado : usados){                
             ArrayList<Tarea> adyacentes = usado.getAdyacentes();
             for(Tarea adya : adyacentes){
-                if((!usados.contains(adya)) && (!candidatos.contains(adya))){
+                if(!usados.contains(adya) && !candidatos.contains(adya)){
                     candidatos.add(adya);
                 }
             }
-        }                                                                      lineaDina++;
+        }
+        
+        if (candidatos.isEmpty()) {
+            return null;
+        }
         return candidatos;
      }
      
