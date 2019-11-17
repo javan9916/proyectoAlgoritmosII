@@ -662,6 +662,11 @@ public class ProyectoAlgoritmosII {
        
     }
     
+    /*FECHA DE CREACION: 10/11/19
+    ULTIMA MODIFICACION: 16/11/19
+    CREADOR: Javier
+    
+    Manda a llamar las funciones que inicializan y llenan a los padres y luego imprime los padres*/
     public static void llenarPadres(int ciclo) {
         padre1 = inicializarPadre(ciclo, padre1);
         padre2 = inicializarPadre(ciclo, padre2);
@@ -688,6 +693,11 @@ public class ProyectoAlgoritmosII {
         }
     }
     
+    /*FECHA DE CREACION: 14/11/19
+    ULTIMA MODIFICACION: 16/11/19
+    CREADOR: Javier
+    
+    Inicia a los padres con una estación por defecto y luego llama a llenarPadre*/
     public static ArrayList<Estacion> inicializarPadre(int ciclo, ArrayList<Estacion> padre){
         padre = new ArrayList<>();
         
@@ -696,6 +706,11 @@ public class ProyectoAlgoritmosII {
         return llenarPadre(padre, ciclo);
     }
     
+    /*FECHA DE CREACION: 14/11/19
+    ULTIMA MODIFICACION: 16/11/19
+    CREADOR: Javier
+    
+    Llena los padres a medida que se van acomodando las tareas de manera aleatoria*/
     public static ArrayList<Estacion> llenarPadre(ArrayList<Estacion> padre, int ciclo) {
         usados = new ArrayList<>();
         ArrayList<Tarea> candidatos = new ArrayList<>();
@@ -734,7 +749,12 @@ public class ProyectoAlgoritmosII {
         return padre;
     }
      
-     public static ArrayList<Tarea> actualizarCandidatos(ArrayList<Tarea> candidatos, ArrayList<Tarea> usados) {
+    /*FECHA DE CREACION: 14/11/19
+    ULTIMA MODIFICACION: 16/11/19
+    CREADOR: Javier
+    
+    Actualiza los candidatos para cada asignación de tarea nueva*/
+    public static ArrayList<Tarea> actualizarCandidatos(ArrayList<Tarea> candidatos, ArrayList<Tarea> usados) {
         candidatos = new ArrayList<>();
         for(Tarea usado : usados){                
             ArrayList<Tarea> adyacentes = usado.getAdyacentes();
@@ -749,38 +769,5 @@ public class ProyectoAlgoritmosII {
             return null;
         }
         return candidatos;
-     }
-     
-    public static void cruce(int punto1, int punto2, ArrayList<Estacion> padre1, ArrayList<Estacion> padre2) {
-        hijo1 = new ArrayList<>();
-        hijo2 = new ArrayList<>();
-        
-        for (int i = 0; i < padre1.size(); i++) {
-            if (i == punto1 || i == punto2) {
-                hijo1.add(padre1.get(i));
-            } else {
-                hijo1.add(padre2.get(i));
-            }
-        }
-        
-        for (int i = 0; i < padre2.size(); i++) {
-            if (i == punto1 || i == punto2) {
-                hijo2.add(padre2.get(i));
-            } else {
-                hijo2.add(padre1.get(i));
-            }
-        }
-    }
-    
-    public static boolean apto(ArrayList<Estacion> hijo) {
-        usados = new ArrayList<>();
-        for (int i = 0; i < hijo.size(); i++) {
-            for (int j = 0; j < hijo.get(i).getTareas().size(); j++) {
-                if (!revisarPrevios(hijo.get(i).getTareas().get(j), usados)) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }
